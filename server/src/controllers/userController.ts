@@ -30,3 +30,22 @@ export const getUserById = async (req: express.Request, res: express.Response) =
       res.status(500).json({ error: 'Failed to fetch user' });
     }
 };
+
+// Create a new user
+export const createUser = async (req: express.Request, res: express.Response) => {
+  try {
+    const validated = userSchema.parse(req.body);
+    const profileImage = `https://api.dicebear.com/9.x/lorelei/svg?seed=${encodeURIComponent(
+      validated.email
+    )}`;
+    const user = await prisma.user.create({
+      data: { ...validated, profileImage, totalMinutesPlayed: validated.totalMinutesPlayed ?? 0 },
+    });
+    res.status(201).json(user);
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res
+      .status(400)
+      .json({ error: error instanceof Error ? error.message : error });
+  }
+};
