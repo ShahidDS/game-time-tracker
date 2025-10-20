@@ -1,23 +1,26 @@
-import express from 'express';
+import type { Request, Response } from 'express';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { userSchema, userUpdateSchema } from '../validators/userSchema.ts';
 
 const prisma = new PrismaClient();
 
 //  Get all users
-export const getUsers = async (req: express.Request, res: express.Response) => {
+export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await prisma.user.findMany();
-    res.status(200).json(users);
+    const users = await prisma.user.findMany({
+      orderBy: { id: 'asc' },
+    });
+    res.json(users);
   } catch (error) {
+    console.error('Error fetching users:', error);
     res.status(500).json({ error: 'Failed to fetch users' });
   }
 };
 
 // Get user by ID
 export const getUserById = async (
-  req: express.Request,
-  res: express.Response
+  req: Request,
+  res: Response
 ) => {
   const { id } = req.params;
   try {
@@ -29,17 +32,19 @@ export const getUserById = async (
     }
     res.json(user);
   } catch (error) {
+    console.error('Error fetching user by id:', error);
     res.status(500).json({ error: 'Failed to fetch user' });
   }
 };
 
 // Create a new user
 export const createUser = async (
-  req: express.Request,
-  res: express.Response
+  req: Request,
+  res: Response
 ) => {
   try {
     const validated = userSchema.parse(req.body);
+    // Generate a profile image URL
     const profileImage = `https://api.dicebear.com/9.x/lorelei/svg?seed=${encodeURIComponent(
       validated.email
     )}`;
@@ -60,7 +65,7 @@ export const createUser = async (
 };
 
 // Update user by ID
-export const updateUser = async (req: express.Request, res: express.Response) => {
+export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const validated = userUpdateSchema.parse(req.body);
@@ -77,6 +82,21 @@ export const updateUser = async (req: express.Request, res: express.Response) =>
     });
     res.json(user);
   } catch (error) {
+    console.error('Error updating user:', error);
     res.status(400).json({ error });
+  }
+};
+
+// Delete user by ID
+export const deleteUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    await prisma.user.delete({
+      where: { id: Number(id) },
+    });
+    res.status(200).json({ message: 'User deleted successfully'});
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Failed to delete user' });
   }
 };
