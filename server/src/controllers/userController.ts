@@ -14,3 +14,19 @@ export const getUsers = async (req: express.Request, res: express.Response) => {
         res.status(500).json({ error: 'Failed to fetch users' });
     }
 };
+
+// Get user by ID
+export const getUserById = async (req: express.Request, res: express.Response) => {
+    const { id } = req.params;
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: Number(id) },
+      });
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch user' });
+    }
+};
