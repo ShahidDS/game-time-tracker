@@ -64,7 +64,7 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const validated = userUpdateSchema.parse(req.body);
 
-    const updateData: any = {};
+    const updateData: Prisma.UserUpdateInput = {};
     if (validated.firstName !== undefined)
       updateData.firstName = validated.firstName;
     if (validated.lastName !== undefined)
