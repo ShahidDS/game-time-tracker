@@ -55,7 +55,7 @@ export const createGame = async (req: Request, res: Response) => {
     const game = await prisma.game.create({
       data: {
         name: validated.name,
-        totalMinutesPlayed: 0, // Start with 0 minutes
+        totalMinutesPlayed: 0,
       },
     });
     res.status(201).json(game);
@@ -125,7 +125,7 @@ export const getGameStats = async (req: Request, res: Response) => {
           orderBy: {
             createdAt: 'desc',
           },
-          take: 10, // Last 10 sessions
+          take: 10,
         },
       },
       orderBy: {
@@ -133,7 +133,6 @@ export const getGameStats = async (req: Request, res: Response) => {
       },
     });
 
-    // Calculate additional statistics
     const statsWithCalculations = gameStats.map(game => ({
       ...game,
       averageSessionLength: game._count.sessions > 0 
@@ -187,15 +186,12 @@ export const getGameDetailedStats = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Game not found' });
     }
 
-    // Calculate additional statistics
     const averageSessionLength = game._count.sessions > 0 
       ? Math.round(game.totalMinutesPlayed / game._count.sessions)
       : 0;
 
-    // Get unique players
     const uniquePlayers = new Set(game.sessions.map(session => session.userId)).size;
 
-    // Get recent activity (last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     

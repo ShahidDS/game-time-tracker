@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use('/users', userRoutes);
-app.use('/api/games', gameRoutes);
+app.use('/users/games', gameRoutes);
 
 
 app.listen(PORT, () => {
