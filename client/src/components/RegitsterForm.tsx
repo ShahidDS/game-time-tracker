@@ -67,31 +67,32 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
         placeholder="First Name"
         value={firstName}
         onChange={(e) => setFirstName(e.target.value)}
-        className="input"
+        className="input p-2 text-gray-200"
         required
       />
       <input
         placeholder="Last Name"
         value={lastName}
         onChange={(e) => setLastName(e.target.value)}
-        className="input"
+        className="input p-2 text-gray-200"
         required
       />
       <input
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="input"
+        className="input p-2 text-gray-200"
         required
       />
       <input
         type="file"
         accept="image/*"
+        className="file-input cursor-pointer p-2 text-gray-200"
         onChange={(e) => (photoRef.current = e.target.files?.[0] ?? null)}
       />
       <button
         type="submit"
-        className="bg-pinkyDark text-white rounded-xl px-4 py-2 hover:bg-pink-600"
+        className="bg-blue-400 text-white rounded-xl px-4 py-2 hover:bg-blue-500 cursor-pointer"
       >
         Add User
       </button>
