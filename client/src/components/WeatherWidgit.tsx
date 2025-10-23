@@ -26,7 +26,7 @@ export default function Weather() {
 
   return (
     <div className="p-4 bg-black rounded shadow mb-6 max-w-md mx-auto">
-      <h2 className="text-xl font-bold mb-2 text-blue-300 text-center">
+      <h2 className="text-xl font-bold mb-2 text-pink-400 text-center">
         Weather in {city}
       </h2>
       <div className="flex gap-2 mb-2">
@@ -39,7 +39,7 @@ export default function Weather() {
         />
         <button
           onClick={handleSearch}
-          className="bg-blue-400 text-white px-4 rounded hover:bg-blue-400"
+          className="bg-pink-400 text-white px-4 rounded hover:bg-pink-500"
         >
           Get Weather
         </button>

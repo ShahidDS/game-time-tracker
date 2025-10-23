@@ -1,10 +1,12 @@
 import express from 'express';
+import cors from 'cors';
 import userRoutes from './src/routes/userRoutes.ts';
 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
 
 app.use('/users', userRoutes);
