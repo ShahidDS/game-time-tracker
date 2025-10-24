@@ -8,6 +8,7 @@ export const userProfileSchema = z.object({
 });
 
 export const gameStatsItemSchema = z.object({
+  gameId: z.number(),
   gameName: z.string(),
   minutesPlayed: z.number(),
   percentageOfTotal: z.number(),
