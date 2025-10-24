@@ -15,7 +15,7 @@ export default function DoughnutChart({
     labels: sessions.map((s) => s.game),
     datasets: [
       {
-        // Chart.js expects numbers for dataset values, not strings.
+        label: 'Percentage of Total Minutes Played',
         data: sessions.map((s) =>
           Number(((s.totalMinutes / total) * 100).toFixed(2))
         ),

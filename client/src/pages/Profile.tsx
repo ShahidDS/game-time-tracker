@@ -92,7 +92,7 @@ export default function Profile() {
   return (
     <div className="p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Row 1: User Info & BarChart */}
+        {/* User Info & BarChart */}
         <div className="flex flex-col items-center bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md">
           <img
             src={user.profileImage || '/default-avatar.png'}
@@ -114,7 +114,7 @@ export default function Profile() {
           )}
         </div>
 
-        {/* Row 2: DoughnutChart & Summary + Buttons */}
+        {/* DoughnutChart & Summary + Buttons */}
         <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md h-[400px] flex items-center justify-center">
           {combinedSessions.length > 0 ? (
             <DoughnutChart sessions={combinedSessions} colors={chartColors} />
@@ -128,9 +128,9 @@ export default function Profile() {
         <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md flex flex-col items-center justify-center">
           {combinedSessions.length > 0 ? (
             <>
-              <h2 className="text-pink-500 text-5xl mb-2">{totalMinutes}</h2>
+              <h2 className="text-pink-500 text-7xl mb-2">{totalMinutes}</h2>
               <p className="text-sm dark:text-gray-400 mb-6">
-                Total minutes played across {combinedSessions.length} games
+                Total minutes played 
               </p>
             </>
           ) : (

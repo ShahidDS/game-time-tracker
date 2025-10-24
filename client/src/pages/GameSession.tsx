@@ -30,7 +30,7 @@ export default function GameSession() {
 
   // Timer
   useEffect(() => {
-    if (!started || stopped) return; // Only run timer if started
+    if (!started || stopped) return; 
     const interval = setInterval(() => setSeconds((prev) => prev + 1), 1000);
     return () => clearInterval(interval);
   }, [started, stopped]);
