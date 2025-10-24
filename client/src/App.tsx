@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Users from "./pages/Users";
 import Profile from "./pages/Profile";
 import Games from "./pages/Games";
+import GameSession from "./pages/GameSession";
 
 export default function App() {
   return (
@@ -24,6 +25,10 @@ export default function App() {
             <Route path="/users" element={<Users />} />
             <Route path="/profile/:userId" element={<Profile />} />
             <Route path="/games/:userId" element={<Games />} />
+            <Route
+              path="/games/session/:gameId/:userId"
+              element={<GameSession />}
+            />
             
           </Routes>
         </main>

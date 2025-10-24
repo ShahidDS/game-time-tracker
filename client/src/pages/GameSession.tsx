@@ -11,6 +11,7 @@ export default function GameSession() {
   const [user, setUser] = useState<User | null>(null);
   const [seconds, setSeconds] = useState(0);
   const [stopped, setStopped] = useState(false);
+  const [started, setStarted] = useState(false); // New state for start button
   const gameName = location.state?.gameName || '';
 
   // Fetch user info
@@ -29,10 +30,10 @@ export default function GameSession() {
 
   // Timer
   useEffect(() => {
-    if (stopped) return;
+    if (!started || stopped) return; // Only run timer if started
     const interval = setInterval(() => setSeconds((prev) => prev + 1), 1000);
     return () => clearInterval(interval);
-  }, [stopped]);
+  }, [started, stopped]);
 
   // Handle stop
   const handleStop = async () => {
@@ -46,7 +47,6 @@ export default function GameSession() {
         const startedAt = new Date(now.getTime() - seconds * 1000);
         const endedAt = new Date(startedAt.getTime() + seconds * 60000);
 
-        // ✅ Store the API response
         const res = await api.post(`/sessions`, {
           userId: Number(userId),
           gameId: Number(gameId),
@@ -56,7 +56,6 @@ export default function GameSession() {
 
         console.log('Play session saved successfully');
 
-        // ✅ Navigate with recent session
         navigate(`/profile/${userId}`, {
           state: {
             recentSession: res.data.session,
@@ -85,12 +84,21 @@ export default function GameSession() {
       <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 mb-6 flex items-center gap-4 w-full max-w-md">
         <h2 className="text-3xl font-bold text-pinkyDark">{gameName}</h2>
         <p className="text-2xl font-mono ml-auto">{formatTime(seconds)}</p>
-        <button
-          onClick={handleStop}
-          className="ml-4 bg-pinkyDark text-white px-4 py-2 rounded-lg hover:bg-pink-600"
-        >
-          Stop
-        </button>
+        {started ? (
+          <button
+            onClick={handleStop}
+            className="ml-4 bg-pinkyDark text-white px-4 py-2 rounded-lg hover:bg-pink-600"
+          >
+            Stop
+          </button>
+        ) : (
+          <button
+            onClick={() => setStarted(true)}
+            className="ml-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500"
+          >
+            Start
+          </button>
+        )}
       </div>
 
       {/* User info */}
