@@ -33,6 +33,11 @@ export default function Users() {
     setShowForm(false);
   };
 
+  // Navigate to Games page with userId
+  const handlePlayGame = (userId: string) => {
+    navigate(`/games/${userId}`);
+  };
+
   return (
     <div className="p-6 min-h-[calc(100vh-128px)]">
       <div className="flex justify-between items-center mb-6">
@@ -83,6 +88,12 @@ export default function Users() {
               <p className="text-gray-500 dark:text-gray-400 text-sm text-center">
                 {user.email}
               </p>
+              <button
+                onClick={() => handlePlayGame(user.id)}
+                className="mt-2 bg-pink-400 text-white px-4 py-2 rounded-lg hover:bg-pink-500"
+              >
+                Play Game
+              </button>
             </div>
           ))}
         </div>
