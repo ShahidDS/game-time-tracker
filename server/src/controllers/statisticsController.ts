@@ -57,7 +57,9 @@ export const userStats = async (req: Request, res: Response) => {
       ...g,
       percentageOfTotal:
         totalMinutesPlayed > 0
-          ? parseFloat(((g.minutesPlayed / totalMinutesPlayed) * 100).toFixed(2))
+          ? parseFloat(
+              ((g.minutesPlayed / totalMinutesPlayed) * 100).toFixed(2)
+            )
           : 0,
     }));
 
@@ -73,7 +75,7 @@ export const userStats = async (req: Request, res: Response) => {
       gameStats: gameStatsWithPercentages,
     };
 
-    // Validate response with Zod schema 
+    // Validate response with Zod schema
     const validatedResponse = userStatsResponseSchema.parse(response);
 
     res.json(validatedResponse);

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const userProfileSchema = z.object({
   id: z.number(),
@@ -19,5 +19,3 @@ export const userStatsResponseSchema = z.object({
   totalMinutesPlayed: z.number(),
   gameStats: z.array(gameStatsItemSchema),
 });
-
-
