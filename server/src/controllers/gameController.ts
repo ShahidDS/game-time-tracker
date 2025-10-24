@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { gameSchema, gameUpdateSchema } from '../validators/gameSchema';
+import { gameSchema, gameUpdateSchema } from '../validators/gameSchema.ts';
 
 const prisma = new PrismaClient();
 
@@ -71,9 +71,14 @@ export const updateGame = async (req: Request, res: Response) => {
   try {
     const validated = gameUpdateSchema.parse(req.body);
     
+    const updateData: { name?: string } = {};
+    if (validated.name !== undefined) {
+      updateData.name = validated.name;
+    }
+
     const game = await prisma.game.update({
       where: { id: Number(id) },
-      data: validated,
+      data: updateData,
     });
     res.json(game);
   } catch (error) {

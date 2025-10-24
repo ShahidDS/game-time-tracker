@@ -7,7 +7,7 @@ import {
   deleteGame, 
   getGameStats,
   getGameDetailedStats 
-} from '../controllers/gameController';
+} from '../controllers/gameController.ts';
 
 const router = express.Router();
 
