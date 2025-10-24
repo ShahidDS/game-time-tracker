@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import userRoutes from './src/routes/userRoutes.ts';
 import gameRoutes from './src/routes/gameRoutes.ts';
+import playSessionRoutes from './src/routes/playSessionRoutes.ts';
 
 
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use('/users', userRoutes);
 app.use('/games', gameRoutes);
+app.use('/sessions', playSessionRoutes);
 
 
 app.listen(PORT, () => {
