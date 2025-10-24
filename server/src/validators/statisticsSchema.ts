@@ -19,3 +19,5 @@ export const userStatsResponseSchema = z.object({
   totalMinutesPlayed: z.number(),
   gameStats: z.array(gameStatsItemSchema),
 });
+
+
