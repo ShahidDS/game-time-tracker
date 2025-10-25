@@ -12,6 +12,8 @@ export const gameStatsItemSchema = z.object({
   gameName: z.string(),
   minutesPlayed: z.number(),
   percentageOfTotal: z.number(),
+  numOfSessionsPerWeek: z.number(),
+  averageSessionLengthPerWeek: z.number(),
 });
 
 export const userStatsResponseSchema = z.object({

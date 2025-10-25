@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 
 export const userStats = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const { gameId } = req.query;
 
   try {
     const user = await prisma.user.findUnique({
@@ -27,6 +28,8 @@ export const userStats = async (req: Request, res: Response) => {
       by: ["gameId"],
       where: { userId: Number(id) },
       _sum: { minutesPlayed: true },
+      _count: { _all: true },
+      _avg: { minutesPlayed: true },
     });
 
     // Fetch game details for those game IDs
@@ -43,6 +46,8 @@ export const userStats = async (req: Request, res: Response) => {
         gameId: g.gameId,
         gameName: game?.name ?? "Unknown Game",
         minutesPlayed: g._sum.minutesPlayed ?? 0,
+        numOfSessionsPerWeek: g._count._all ?? 0,
+        averageSessionLengthPerWeek: g._avg.minutesPlayed ?? 0,
       };
     });
 
@@ -79,6 +84,7 @@ export const userStats = async (req: Request, res: Response) => {
     const validatedResponse = userStatsResponseSchema.parse(response);
 
     res.json(validatedResponse);
+    //res.json(response);
   } catch (error) {
     console.error("Error fetching user stats:", error);
     res.status(500).json({ error: "Failed to fetch user stats" });
