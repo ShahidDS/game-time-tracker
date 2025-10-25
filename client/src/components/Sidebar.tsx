@@ -7,6 +7,7 @@ export default function Sidebar() {
     { path: '/', label: '🏠 Home' },
     { path: '/users', label: '👥 Users' },
 
+
   ];
 
   return (

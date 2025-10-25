@@ -45,7 +45,7 @@ model UserStats {
   userId        Int
   date          DateTime
   minutesPlayed Int      @default(0)
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, date])
 }
