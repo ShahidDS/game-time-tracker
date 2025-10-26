@@ -40,7 +40,7 @@ export default function Users() {
         <h2 className="text-2xl font-bold ">Users</h2>
         <button
           onClick={() => navigate('/')} 
-          className="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-500"
+          className="bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600"
         >
           Add New User
         </button>
