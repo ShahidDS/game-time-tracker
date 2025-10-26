@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import {
   userStatsResponseSchema,
   gameStatsResponseSchema,
+  gameDataForAllSchema,
 } from "../validators/statisticsSchema.ts";
 import { startOfDay, subDays, subMonths, formatISO } from "date-fns";
 
@@ -174,5 +175,105 @@ export const gameBasedStats = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error fetching user game weekly stats:", error);
     res.status(500).json({ error: "Failed to fetch weekly stats" });
+  }
+};
+
+export const gameStatsAllUser = async (req: Request, res: Response) => {
+  const { gameId } = req.params;
+
+  try {
+    const now = new Date();
+    //const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const sevenDaysAgo = subMonths(new Date(), 1);
+    const sessions = await prisma.playSession.findMany({
+      where: {
+        gameId: Number(gameId),
+        updatedAt: {
+          gte: sevenDaysAgo,
+          lte: now,
+        },
+      },
+      select: { gameId: true, minutesPlayed: true },
+    });
+
+    const totalMinutesPlayed = sessions.reduce(
+      (sum, s) => sum + s.minutesPlayed,
+      0
+    );
+
+    const game = await prisma.game.findUnique({
+      where: { id: Number(gameId) },
+      select: { id: true, name: true },
+    });
+
+    const response = {
+      game: {
+        id: Number(gameId),
+        name: game?.name ?? "Unknown Game",
+        totalMinutesPlayedbyAll: totalMinutesPlayed ?? 0,
+      },
+    };
+
+    const validatedResponse = gameDataForAllSchema.parse(response);
+
+    res.json(validatedResponse);
+  } catch (error) {
+    console.error("Error fetching game data:", error);
+    res.status(500).json({ error: "Failed to fetch game data" });
+  }
+};
+
+export const gameTopPlayerStats = async (req: Request, res: Response) => {
+  const { gameId } = req.params;
+
+  try {
+    // Group play sessions by user and sum up the minutes played
+    const userAggregations = await prisma.playSession.groupBy({
+      by: ["userId"],
+      where: { gameId: Number(gameId) },
+      _sum: { minutesPlayed: true },
+    });
+
+    if (userAggregations.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No play sessions found for this game" });
+    }
+
+    // Find the top player (user with the most minutes)
+    const topPlayer = userAggregations.reduce((max, curr) =>
+      (curr._sum.minutesPlayed ?? 0) > (max._sum.minutesPlayed ?? 0)
+        ? curr
+        : max
+    );
+
+    // Fetch user info
+    const user = await prisma.user.findUnique({
+      where: { id: topPlayer.userId },
+      select: { id: true, firstName: true, lastName: true },
+    });
+
+    // Fetch game info (optional but often useful)
+    const game = await prisma.game.findUnique({
+      where: { id: Number(gameId) },
+      select: { id: true, name: true },
+    });
+
+    const response = {
+      gameId: game?.id,
+      gameName: game?.name,
+      topPlayerId: user?.id,
+      topPlayerName: user
+        ? `${user.firstName} ${user.lastName}`.trim()
+        : "Unknown Player",
+      totalMinutesPlayed: topPlayer._sum.minutesPlayed ?? 0,
+    };
+
+    //const validatedResponse = gameDataForAllSchema.parse(response);
+
+    res.json(response);
+  } catch (error) {
+    console.error("Error fetching top Player:", error);
+    res.status(500).json({ error: "Failed to fetch top player" });
   }
 };

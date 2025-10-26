@@ -43,3 +43,11 @@ export const gameStatsResponseSchema = z.object({
   game: gameSchema,
   weeklyStats: weeklyStatsSchema,
 });
+
+export const gameDataForAllSchema = z.object({
+  game: z.object({
+    id: z.number(),
+    name: z.string(),
+    totalMinutesPlayedbyAll: z.number(),
+  }),
+});
