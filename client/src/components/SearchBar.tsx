@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import { useUser } from '../context/UserContext';
 
 type UserPreview = {
   id: string;
@@ -28,6 +29,7 @@ export default function SearchBar({
   const timeoutRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const { setCurrentUser } = useUser();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -43,15 +45,16 @@ export default function SearchBar({
     return () => document.removeEventListener('click', handleClick);
   }, []);
 
+  // Fetch search results
   useEffect(() => {
-    if (!query || query.trim().length < 1) {
+    if (!query.trim()) {
       setResults([]);
       setOpen(false);
       return;
     }
 
     setLoading(true);
-    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     timeoutRef.current = window.setTimeout(async () => {
       try {
@@ -68,17 +71,22 @@ export default function SearchBar({
     }, 300);
 
     return () => {
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [query, endpoint]);
 
+  // Handle user selection
   const handleSelect = (user: UserPreview) => {
     setQuery('');
     setOpen(false);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setCurrentUser(user as any);
+
     if (onSelect) {
       onSelect(user);
     } else {
-      navigate(`/profile/${user.id}`);
+      navigate(`/games/${user.id}`);
     }
   };
 
@@ -88,20 +96,18 @@ export default function SearchBar({
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => {
-            if (results.length) setOpen(true);
-          }}
+          onFocus={() => results.length && setOpen(true)}
           placeholder={placeholder}
-          className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-400 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400"
+          className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-400 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 w-full"
         />
 
-        {/* search icon on the right */}
+        {/* Search / loading icon */}
         <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
           {loading ? (
             <svg
               className="w-5 h-5 animate-spin text-pink-400"
               viewBox="0 0 24 24"
-              fill="black"
+              fill="none"
             >
               <circle
                 cx="12"
@@ -120,7 +126,7 @@ export default function SearchBar({
             </svg>
           ) : (
             <svg
-              className="w-5 h-5 text-pinkyDark"
+              className="w-5 h-5 text-pink-500"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
@@ -138,15 +144,15 @@ export default function SearchBar({
 
       {/* Dropdown */}
       {open && results.length > 0 && (
-        <div className="absolute z-50 mt-2 w-full  border border-violet-300 rounded-lg shadow-lg overflow-hidden">
-          <ul className="divide-y">
+        <div className="absolute z-50 mt-2 w-full border border-violet-300 rounded-lg shadow-lg overflow-hidden bg-white dark:bg-gray-800">
+          <ul className="divide-y divide-gray-200 dark:divide-gray-700">
             {results.map((u) => (
               <li
                 key={u.id}
                 onClick={() => handleSelect(u)}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-pinky/30 cursor-pointer"
+                className="flex items-center gap-3 px-4 py-3 hover:bg-pink-100 dark:hover:bg-gray-700 cursor-pointer transition-colors"
               >
-                <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                   {u.profileImage ? (
                     <img
                       src={u.profileImage}
@@ -154,16 +160,16 @@ export default function SearchBar({
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <span className="text-sm text-pinky-600 font-semibold">
-                      {((u.firstName || '')[0] ?? '').toUpperCase()}
+                    <span className="text-sm text-pink-500 font-semibold">
+                      {(u.firstName?.[0] ?? '').toUpperCase()}
                     </span>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-violet-400 truncate">
+                  <div className="text-sm font-medium text-violet-500 dark:text-violet-400 truncate">
                     {u.firstName || ''} {u.lastName || ''}
                   </div>
-                  <div className="text-xs text-gray-500 truncate">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
                     {u.email}
                   </div>
                 </div>
@@ -174,9 +180,9 @@ export default function SearchBar({
         </div>
       )}
 
-      {/* No results dropdown */}
+      {/* No results */}
       {open && !loading && results.length === 0 && (
-        <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm text-gray-600">
+        <div className="absolute z-50 mt-2 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-sm text-gray-600 dark:text-gray-400">
           No results
         </div>
       )}
