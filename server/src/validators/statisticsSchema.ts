@@ -34,8 +34,12 @@ export const weeklyStatsSchema = z.object({
   ),
 });
 
+export const gameSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
 export const gameStatsResponseSchema = z.object({
   user: userProfileSchema,
-  //totalMinutesPerWeek: z.number(),
+  game: gameSchema,
   weeklyStats: weeklyStatsSchema,
 });

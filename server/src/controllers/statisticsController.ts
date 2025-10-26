@@ -50,8 +50,6 @@ export const userStats = async (req: Request, res: Response) => {
         gameId: g.gameId,
         gameName: game?.name ?? "Unknown Game",
         minutesPlayed: g._sum.minutesPlayed ?? 0,
-        //numOfSessionsPerWeek: g._count._all ?? 0,
-        //averageSessionLengthPerWeek: g._avg.minutesPlayed ?? 0,
       };
     });
 
@@ -173,8 +171,6 @@ export const gameBasedStats = async (req: Request, res: Response) => {
     const validatedResponse = gameStatsResponseSchema.parse(response);
 
     res.json(validatedResponse);
-
-    //res.json(response);
   } catch (error) {
     console.error("Error fetching user game weekly stats:", error);
     res.status(500).json({ error: "Failed to fetch weekly stats" });
