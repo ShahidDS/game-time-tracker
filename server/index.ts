@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use("/users", userRoutes);
 //app.use("/games", gameRoutes);
-app.use("/userStatistics", statisticsRoutes);
+app.use("/statistics", statisticsRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
