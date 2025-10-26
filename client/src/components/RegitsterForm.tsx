@@ -38,7 +38,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       const user: User = res.data;
 
-      // Optional: upload photo if selected
+      // Optional: upload photo 
       if (photoRef.current) {
         const form = new FormData();
         form.append('photo', photoRef.current);
@@ -48,7 +48,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       }
 
       toast.success('🎉 User created successfully!');
-      setTimeout(() => navigate('/users'), 1500);
+      setTimeout(() => navigate('/users'), 2000);
 
       if (onSuccess) onSuccess(user);
       
@@ -58,7 +58,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       if (isAxiosError(err) && err.response?.data?.error?.includes('Email already exists')) {
         toast.error('⚠️ Email already exists. Please use another.');
       } else {
-        toast.error('❌ Could not register user. Try again.');
+        toast.error('⁉️ Email already exists. Please use another.');
       }
     }
   };
