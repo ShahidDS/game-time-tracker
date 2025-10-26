@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { type User } from '../types';
 import toast from 'react-hot-toast';
+import { isAxiosError } from 'axios';
 
 interface RegisterFormProps {
   onSuccess?: (user: User) => void;
@@ -50,10 +51,11 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       setTimeout(() => navigate('/users'), 1500);
 
       if (onSuccess) onSuccess(user);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+      
+    } catch (err: unknown) {
       console.error(err);
-      if (err.response?.data?.error?.includes('Email already exists')) {
+      
+      if (isAxiosError(err) && err.response?.data?.error?.includes('Email already exists')) {
         toast.error('⚠️ Email already exists. Please use another.');
       } else {
         toast.error('❌ Could not register user. Try again.');
