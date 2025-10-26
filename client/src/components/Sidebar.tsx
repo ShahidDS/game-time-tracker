@@ -51,7 +51,7 @@ export default function Sidebar() {
                 className={({ isActive }) =>
                   `flex items-center gap-2 p-2 rounded-lg hover:bg-pink-100 dark:hover:bg-gray-700 ${
                     isActive
-                      ? 'bg-blue-200 dark:bg-blue-400 text-white'
+                      ? 'bg-sky-500 dark:bg-sky -600 text-white'
                       : 'text-gray-800 dark:text-gray-200'
                   }`
                 }
@@ -81,9 +81,9 @@ export default function Sidebar() {
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-6 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 w-full"
+          className="mt-6 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 w-full"
         >
-          🚪 Logout
+          🌸 Logout
         </button>
       )}
     </aside>
