@@ -10,18 +10,18 @@ export default function Sidebar() {
     navigate('/users');
   };
 
-  // Helper to apply active styles
+  // Unified styles for all NavLinks
   const linkClass = (isActive: boolean) =>
-    `px-4 py-2 rounded-lg font-medium hover:bg-blue-100 dark:hover:bg-blue-500 ${
+    `flex items-center gap-2 px-4 py-2 rounded-lg font-medium hover:bg-sky-100 dark:hover:bg-sky-500 ${
       isActive
-        ? 'bg-blue-200 dark:bg-blue-400 text-white'
+        ? 'bg-sky-400 dark:bg-sky-500 text-white'
         : 'text-gray-800 dark:text-gray-200'
     }`;
 
   return (
     <aside className="w-64 bg-white dark:bg-gray-800 shadow-lg min-h-screen p-4 hidden md:flex flex-col justify-between">
       <div>
-        <h2 className="text-2xl font-bold text-pinkyDark mb-6">Dashboard</h2>
+        <h2 className="text-2xl font-bold text-pink-400 mb-6">Dashboard</h2>
 
         <nav className="flex flex-col gap-4">
           {/* Always visible links */}
@@ -36,7 +36,7 @@ export default function Sidebar() {
             👥 Users
           </NavLink>
 
-          {/* Conditional links for logged-in user */}
+          {/* Links for logged-in user */}
           {currentUser && (
             <>
               <NavLink
@@ -48,13 +48,7 @@ export default function Sidebar() {
 
               <NavLink
                 to={`/profile/${currentUser.id}`}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 p-2 rounded-lg hover:bg-pink-100 dark:hover:bg-gray-700 ${
-                    isActive
-                      ? 'bg-sky-500 dark:bg-sky -600 text-white'
-                      : 'text-gray-800 dark:text-gray-200'
-                  }`
-                }
+                className={({ isActive }) => linkClass(isActive)}
               >
                 {currentUser.profileImage ? (
                   <img
@@ -63,11 +57,11 @@ export default function Sidebar() {
                     className="w-8 h-8 rounded-full object-cover"
                   />
                 ) : (
-                  <span className="w-8 h-8 flex items-center justify-center rounded-full bg-pinkyDark text-white font-bold">
+                  <span className="w-8 h-8 flex items-center justify-center rounded-full font-bold">
                     {currentUser.firstName[0].toUpperCase()}
                   </span>
                 )}
-                <span className="text-gray-800 dark:text-gray-200">
+                <span>
                   {currentUser.firstName} {currentUser.lastName}
                 </span>
               </NavLink>
