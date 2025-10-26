@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 import api from '../api/axios';
 import RegisterForm from '../components/RegitsterForm';
 import { type User } from '../types';
@@ -10,6 +11,7 @@ export default function Users() {
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const navigate = useNavigate();
+  const { setCurrentUser } = useUser();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -33,9 +35,10 @@ export default function Users() {
     setShowForm(false);
   };
 
-  // Navigate to Games page with userId
-  const handlePlayGame = (userId: string) => {
-    navigate(`/games/${userId}`);
+  // Navigate to Games page with user
+  const handlePlayGame = (user: User) => {
+    setCurrentUser(user);
+    navigate(`/games/${user.id}`);
   };
 
   return (
@@ -89,7 +92,7 @@ export default function Users() {
                 {user.email}
               </p>
               <button
-                onClick={() => handlePlayGame(user.id)}
+                onClick={() => handlePlayGame(user)}
                 className="mt-2 bg-pink-400 text-white px-4 py-2 rounded-lg hover:bg-pink-500"
               >
                 Play Game
