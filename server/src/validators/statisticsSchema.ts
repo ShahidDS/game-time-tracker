@@ -26,6 +26,12 @@ export const weeklyStatsSchema = z.object({
   numOfSessionsPerWeek: z.number(),
   averageSessionLengthPerWeek: z.number(),
   totalMinutesPerWeek: z.number(),
+  minutesPlayedPerDayInAWeek: z.array(
+    z.object({
+      date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
+      minutes: z.number().nonnegative(),
+    })
+  ),
 });
 
 export const gameStatsResponseSchema = z.object({

@@ -111,8 +111,8 @@ export const gameBasedStats = async (req: Request, res: Response) => {
     // Compute date 7 days ago
     //const oneMonthAgo = subMonths(new Date(), 1);
     //console.log(oneMonthAgo);
-    const sevenDaysAgo = subDays(new Date(), 7);
-    //const sevenDaysAgo = subMonths(new Date(), 1);
+    //const sevenDaysAgo = subDays(new Date(), 7);
+    const sevenDaysAgo = subMonths(new Date(), 1);
     //console.log(sevenDaysAgo);
 
     // All sessions within the last 7 days for the game
@@ -130,6 +130,20 @@ export const gameBasedStats = async (req: Request, res: Response) => {
       (sum, s) => sum + (Number(s.minutesPlayed) || 0),
       0
     );
+
+    // minutes played per day
+    const minutesPerDayMap = sessions.reduce<Record<string, number>>(
+      (acc, session) => {
+        const day = session.updatedAt.toISOString().split("T")[0] ?? "";
+        acc[day] = (acc[day] || 0) + session.minutesPlayed;
+        return acc;
+      },
+      {}
+    );
+
+    const minutesPlayedPerDayInAWeek = Object.entries(minutesPerDayMap)
+      .map(([date, minutes]) => ({ date, minutes }))
+      .sort((a, b) => a.date.localeCompare(b.date));
 
     const gameName = await prisma.game.findUnique({
       where: { id: Number(gameId) },
@@ -152,6 +166,7 @@ export const gameBasedStats = async (req: Request, res: Response) => {
             ? Number((totalMinutesPerWeek / sessions.length).toFixed(2))
             : 0,
         totalMinutesPerWeek: totalMinutesPerWeek,
+        minutesPlayedPerDayInAWeek: minutesPlayedPerDayInAWeek,
       },
     };
 
