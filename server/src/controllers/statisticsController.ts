@@ -227,7 +227,6 @@ export const gameTopPlayerStats = async (req: Request, res: Response) => {
   const { gameId } = req.params;
 
   try {
-    // Group play sessions by user and sum up the minutes played
     const userAggregations = await prisma.playSession.groupBy({
       by: ["userId"],
       where: { gameId: Number(gameId) },
@@ -240,7 +239,7 @@ export const gameTopPlayerStats = async (req: Request, res: Response) => {
         .json({ message: "No play sessions found for this game" });
     }
 
-    // Find the top player (user with the most minutes)
+    // Find the top player
     const topPlayer = userAggregations.reduce((max, curr) =>
       (curr._sum.minutesPlayed ?? 0) > (max._sum.minutesPlayed ?? 0)
         ? curr
@@ -253,7 +252,7 @@ export const gameTopPlayerStats = async (req: Request, res: Response) => {
       select: { id: true, firstName: true, lastName: true },
     });
 
-    // Fetch game info (optional but often useful)
+    // Fetch game info
     const game = await prisma.game.findUnique({
       where: { id: Number(gameId) },
       select: { id: true, name: true },

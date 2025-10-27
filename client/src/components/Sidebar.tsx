@@ -46,7 +46,7 @@ export default function Sidebar() {
                 🎮 Games
               </NavLink>
               <NavLink
-                to={`/statistics/games/`}
+                to={`/statistics/${currentUser.id}`}
                 className={({ isActive }) => linkClass(isActive)}
               >
                 🎮 Statistics

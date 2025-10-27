@@ -30,7 +30,7 @@ export default function App() {
               path="/games/session/:gameId/:userId"
               element={<GameSession />}
             />
-            <Route path="/statistics/games" element={<GameStatistics />} />
+            <Route path="/statistics/:userId" element={<GameStatistics />} />
           </Routes>
         </main>
       </div>
