@@ -1,7 +1,7 @@
 import { Doughnut } from 'react-chartjs-2';
 
 type DoughnutChartProps = {
-  sessions: { game: string; totalMinutes: number }[];
+  sessions: { game: { name: string }; minutesPlayed: number }[];
   colors: string[];
 };
 
@@ -9,16 +9,13 @@ export default function DoughnutChart({
   sessions,
   colors,
 }: DoughnutChartProps) {
-  const total = sessions.reduce((sum, s) => sum + s.totalMinutes, 0);
 
   const data = {
-    labels: sessions.map((s) => s.game),
+    labels: sessions.map((s) => s.game.name),
     datasets: [
       {
-        label: 'Percentage of Total Minutes Played',
-        data: sessions.map((s) =>
-          Number(((s.totalMinutes / total) * 100).toFixed(2))
-        ),
+        label: 'Minutes Played',
+        data: sessions.map((s) => s.minutesPlayed),
         backgroundColor: sessions.map((_, idx) => colors[idx % colors.length]),
         hoverOffset: 10,
       },
@@ -26,27 +23,19 @@ export default function DoughnutChart({
   };
 
   const options = {
-    cutout: '45%', 
+    cutout: '45%',
     plugins: {
-      legend: {
-        position: 'bottom' as const,
-        labels: {
-          color: '#888',
-        },
-      },
+      legend: { position: 'bottom' as const, labels: { color: '#888' } },
       title: {
         display: true,
-        text: 'Percentage of Total Playtime per Game',
+        text: 'Minutes Played per Session',
         color: '#f15bb5',
-        font: {
-          size: 16,
-          weight: 'bold' as const,
-        },
+        font: { size: 16, weight: 'bold' as const },
       },
       tooltip: {
         callbacks: {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: (context: any) => `${context.label}: ${context.raw}%`,
+          label: (context: any) => `${context.label}: ${context.raw} min`,
         },
       },
     },

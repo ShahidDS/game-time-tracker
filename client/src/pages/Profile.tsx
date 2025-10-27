@@ -11,13 +11,10 @@ defaults.maintainAspectRatio = false;
 defaults.responsive = true;
 
 type PlaySession = {
-  gameId: string;
+  id: number;
+  gameId: number;
   minutesPlayed: number;
-  date: string;
-  game?: {
-    id: string;
-    name: string;
-  };
+  game: { name: string };
 };
 
 export default function Profile() {
@@ -42,24 +39,21 @@ export default function Profile() {
     '#80ed99',
   ];
 
+  // Fetch user info
   useEffect(() => {
     if (!userId) return;
     setLoading(true);
-    const fetchUser = async () => {
-      try {
-        const res = await api.get(`/users/${userId}`);
-        setUser(res.data);
-      } catch {
-        setError('Failed to fetch user');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
+    api
+      .get(`/users/${userId}`)
+      .then((res) => setUser(res.data))
+      .catch(() => setError('Failed to fetch user'))
+      .finally(() => setLoading(false));
   }, [userId]);
 
+  // Fetch user sessions
   useEffect(() => {
     if (!userId) return;
+
     const fetchSessions = async () => {
       try {
         const res = await api.get(`/sessions/${userId}`);
@@ -68,6 +62,7 @@ export default function Profile() {
         setError('Failed to fetch sessions');
       }
     };
+
     fetchSessions();
   }, [userId]);
 
@@ -76,23 +71,13 @@ export default function Profile() {
   if (!user) return <p className="text-center text-gray-500">User not found</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
-  const gameTotals = sessions.reduce<Record<string, number>>((acc, s) => {
-    const gameName = s.game?.name || `Game ${s.gameId}`;
-    acc[gameName] = (acc[gameName] || 0) + s.minutesPlayed;
-    return acc;
-  }, {});
-
-  const combinedSessions = Object.entries(gameTotals).map(([game, total]) => ({
-    game,
-    totalMinutes: total,
-  }));
-
-  const totalMinutes = Object.values(gameTotals).reduce((a, b) => a + b, 0);
+  // Total minutes
+  const totalMinutes = sessions.reduce((acc, s) => acc + s.minutesPlayed, 0);
 
   return (
     <div className="p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* User Info & BarChart */}
+        {/* User Info */}
         <div className="flex flex-col items-center bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md">
           <img
             src={user.profileImage || '/default-avatar.png'}
@@ -104,9 +89,10 @@ export default function Profile() {
           </h1>
         </div>
 
+        {/* BarChart */}
         <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md h-[300px]">
-          {combinedSessions.length > 0 ? (
-            <BarChart sessions={combinedSessions} colors={chartColors} />
+          {sessions.length > 0 ? (
+            <BarChart sessions={sessions} colors={chartColors} />
           ) : (
             <p className="text-gray-500 dark:text-gray-400 text-center mt-20">
               No sessions to display
@@ -114,10 +100,10 @@ export default function Profile() {
           )}
         </div>
 
-        {/* DoughnutChart & Summary + Buttons */}
+        {/* DoughnutChart */}
         <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md h-[400px] flex items-center justify-center">
-          {combinedSessions.length > 0 ? (
-            <DoughnutChart sessions={combinedSessions} colors={chartColors} />
+          {sessions.length > 0 ? (
+            <DoughnutChart sessions={sessions} colors={chartColors} />
           ) : (
             <p className="text-gray-500 dark:text-gray-400 text-center">
               No data available for chart
@@ -125,12 +111,13 @@ export default function Profile() {
           )}
         </div>
 
+        {/* Summary & Buttons */}
         <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md flex flex-col items-center justify-center">
-          {combinedSessions.length > 0 ? (
+          {totalMinutes > 0 ? (
             <>
               <h2 className="text-pink-500 text-7xl mb-2">{totalMinutes}</h2>
               <p className="text-sm dark:text-gray-400 mb-6">
-                Total minutes played 
+                Total minutes played for {sessions.length} sessions
               </p>
             </>
           ) : (
@@ -141,13 +128,13 @@ export default function Profile() {
           <div className="flex justify-center gap-4">
             <button
               onClick={() => navigate('/users')}
-              className="bg-pink-400 text-white px-4 py-2 rounded-2xl hover:bg-pink-500"
+              className="bg-pink-400 text-white px-4 py-2 rounded-2xl hover:bg-pink-500 cursor-poionter"
             >
               View Users
             </button>
             <button
               onClick={() => navigate(`/games/${userId}`)}
-              className="bg-violet-500 text-white px-4 py-2 rounded-2xl hover:bg-violet-600"
+              className="bg-violet-500 text-white px-4 py-2 rounded-2xl hover:bg-violet-600 cursor-pointer"
             >
               Go to Games
             </button>

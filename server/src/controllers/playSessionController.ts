@@ -30,34 +30,12 @@ export const createPlaySession = async (req: Request, res: Response) => {
         userId,
         gameId,
         minutesPlayed,
-        createdAt: end,
       },
-    });
-
-    // Update user & game totals
-    await prisma.user.update({
-      where: { id: userId },
-      data: { totalMinutesPlayed: { increment: minutesPlayed } } as any,
-    });
-
-    await prisma.game.update({
-      where: { id: gameId },
-      data: { totalMinutesPlayed: { increment: minutesPlayed } } as any,
-    });
-
-    // Update daily stats (UserStats)
-    const day = normalizeDate(end);
-    await prisma.userStats.upsert({
-      where: {
-        userId_date: { userId, date: day },
-      },
-      update: {
-        minutesPlayed: { increment: minutesPlayed },
-      },
-      create: {
-        userId,
-        date: day,
-        minutesPlayed,
+      select: {
+        id: true,
+        userId: true,
+        gameId: true,
+        minutesPlayed: true,
       },
     });
 
@@ -72,13 +50,21 @@ export const createPlaySession = async (req: Request, res: Response) => {
     });
   }
 };
-
 //GET all sessions
 export const getAllPlaySessions = async (req: Request, res: Response) => {
   try {
     const sessions = await prisma.playSession.findMany({
-      include: { user: true, game: true },
-      orderBy: { createdAt: 'desc' },
+      select: {
+        minutesPlayed: true,
+        id: true,
+        gameId: true,
+        game: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: { id: 'desc' },
     });
     return res.json(sessions);
   } catch (error) {
@@ -90,7 +76,7 @@ export const getAllPlaySessions = async (req: Request, res: Response) => {
 };
 
 //GET all play sessions user by userId
-export const getUserStats = async (req: Request, res: Response) => {
+export const getPlaySessionByUserId = async (req: Request, res: Response) => {
   const userIdParam = req.params.userId;
   const userId = parseInt(userIdParam ?? '', 10);
 
@@ -101,9 +87,19 @@ export const getUserStats = async (req: Request, res: Response) => {
   try {
     const sessions = await prisma.playSession.findMany({
       where: { userId },
-      include: { game: true },
-      orderBy: { createdAt: 'desc' },
+      select: {
+        minutesPlayed: true,
+        id: true,
+        gameId: true,
+        game: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: { id: 'desc' },
     });
+
     return res.json(sessions);
   } catch (error) {
     return res.status(500).json({
@@ -115,15 +111,13 @@ export const getUserStats = async (req: Request, res: Response) => {
 
 //DELETE play session by id
 export const deletePlaySession = async (req: Request, res: Response) => {
-  const sessionIdParam = req.params.id;
-  const sessionId = parseInt(sessionIdParam ?? '', 10);
+  const sessionId = parseInt(req.params.id ?? '', 10);
 
   if (Number.isNaN(sessionId)) {
     return res.status(400).json({ error: 'Invalid session id' });
   }
 
   try {
-    // Find the session first
     const session = await prisma.playSession.findUnique({
       where: { id: sessionId },
     });
@@ -132,30 +126,9 @@ export const deletePlaySession = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Play session not found' });
     }
 
-    const { userId, gameId, minutesPlayed, createdAt } = session;
-
     // Delete the session
     await prisma.playSession.delete({
       where: { id: sessionId },
-    });
-
-    // Update user total
-    await prisma.user.update({
-      where: { id: userId },
-      data: { totalMinutesPlayed: { decrement: minutesPlayed } },
-    });
-
-    // Update game total
-    await prisma.game.update({
-      where: { id: gameId },
-      data: { totalMinutesPlayed: { decrement: minutesPlayed } },
-    });
-
-    // Update daily stats
-    const day = normalizeDate(createdAt);
-    await prisma.userStats.updateMany({
-      where: { userId, date: day },
-      data: { minutesPlayed: { decrement: minutesPlayed } },
     });
 
     return res.json({

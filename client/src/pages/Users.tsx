@@ -40,7 +40,7 @@ export default function Users() {
         <h2 className="text-2xl font-bold ">Users</h2>
         <button
           onClick={() => navigate('/')} 
-          className="bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600"
+          className="bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600 cursor-pointer"
         >
           Add New User
         </button>
@@ -76,7 +76,7 @@ export default function Users() {
                 </p>
                 <button
                   onClick={() => navigate(`/profile/${user.id}`)}
-                  className="text-pink-400 font-bold hover:underline"
+                  className="text-pink-400 font-bold hover:underline cursor-pointer"
                 >
                   View
                 </button>
@@ -86,7 +86,7 @@ export default function Users() {
               </p>
               <button
                 onClick={() => handlePlayGame(user)}
-                className="mt-2 bg-pink-400 text-white px-4 py-2 rounded-lg hover:bg-pink-500"
+                className="mt-2 bg-pink-400 text-white px-4 py-2 rounded-lg hover:bg-pink-500 cursor-pointer"
               >
                 Play Game
               </button>

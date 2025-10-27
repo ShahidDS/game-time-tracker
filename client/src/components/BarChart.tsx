@@ -2,17 +2,17 @@ import { Bar } from 'react-chartjs-2';
 import type { ChartOptions } from 'chart.js';
 
 type BarChartProps = {
-  sessions: { game: string; totalMinutes: number }[];
+  sessions: { game: { name: string }; minutesPlayed: number }[];
   colors: string[];
 };
 
 export default function BarChart({ sessions, colors }: BarChartProps) {
   const data = {
-    labels: sessions.map((s) => s.game),
+    labels: sessions.map((s) => s.game.name),
     datasets: [
       {
-        label: 'Total Minutes Played',
-        data: sessions.map((s) => s.totalMinutes),
+        label: 'Minutes Played',
+        data: sessions.map((s) => s.minutesPlayed),
         backgroundColor: sessions.map((_, idx) => colors[idx % colors.length]),
         borderRadius: 8,
       },
@@ -23,27 +23,17 @@ export default function BarChart({ sessions, colors }: BarChartProps) {
     indexAxis: 'y' as const,
     responsive: true,
     plugins: {
-      legend: {
-        display: false,
-      },
+      legend: { display: false },
       title: {
         display: true,
-        text: 'Total Playtime per Game',
+        text: 'Minutes Played per Session',
         color: '#f15bb5',
-        font: {
-          size: 16,
-          weight: 'bold',
-        },
+        font: { size: 16, weight: 'bold' },
       },
     },
     scales: {
-      x: {
-        ticks: { color: '#888' },
-      },
-      y: {
-        ticks: { color: '#888' },
-        beginAtZero: true,
-      },
+      x: { ticks: { color: '#888' }, beginAtZero: true },
+      y: { ticks: { color: '#888' } },
     },
   };
 
