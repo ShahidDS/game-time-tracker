@@ -1,4 +1,6 @@
 import BarChart from "../components/BarChart";
+import TopPlayersTable from "../components/TopPlayersTable";
+
 import "chart.js/auto";
 import { defaults } from "chart.js";
 import api from "../api/axios";
@@ -17,8 +19,8 @@ interface GameData {
 }
 interface TopPlayers {
   gameName: string;
-  playerName: string;
-  minutesPlayed: number;
+  topPlayerName: string;
+  totalMinutesPlayed: number;
 }
 
 export default function GameStatistics() {
@@ -59,6 +61,24 @@ export default function GameStatistics() {
     }
   };
 
+  const fetchTopPlayers = async () => {
+    try {
+      const dataForEachGame = gameIds.map(async (gameId) => {
+        const topPlayerResponse = await api.get<TopPlayers>(
+          `/statistics/topPlayer/${gameId}`
+        );
+        return topPlayerResponse.data;
+      });
+      const resolvedTopPlayers = await Promise.all(dataForEachGame);
+      setTopPlayers(resolvedTopPlayers);
+      console.log("Top Players Data:", resolvedTopPlayers);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch top players"
+      );
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       await fetchGameIds();
@@ -69,6 +89,7 @@ export default function GameStatistics() {
   useEffect(() => {
     if (gameIds.length > 0) {
       fetchGames();
+      fetchTopPlayers();
     }
   }, [gameIds]);
 
@@ -82,9 +103,16 @@ export default function GameStatistics() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4 text-pink-500">Game Statistics</h1>
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md h-[340px]">
+      <h1 className="text-2xl font-bold mb-4 text-pink-500">
+        Game Statistics:
+      </h1>
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md h-[340px] mb-6">
         <BarChart sessions={games} colors={chartColors} />
+      </div>
+
+      <h2 className="text-2xl font-bold mb-4 text-pink-500">Leaderboard:</h2>
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md">
+        <TopPlayersTable topPlayers={topPlayers} />
       </div>
     </div>
   );
