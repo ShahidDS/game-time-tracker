@@ -1,0 +1,22 @@
+{
+  "name": "game-time-tracker",
+  "version": "1.0.0",
+  "description": "Game Time Tracker Application",
+  "scripts": {
+    "dev:db": "docker-compose up -d",
+    "dev:db:stop": "docker-compose down",
+    "dev:db:reset": "docker-compose down && docker volume rm game-time-tracker_postgres_data && docker-compose up -d",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev:full": "npm run dev:db && cd server && npx prisma db push && npm run db:seed && npm run dev",
+    "install:all": "cd server && npm install && cd ../client && npm install"
+  },
+  "keywords": [
+    "game",
+    "tracker",
+    "postgres",
+    "docker"
+  ],
+  "author": "",
+  "license": "MIT"
+}

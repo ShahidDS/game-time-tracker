@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/app.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/app.ts",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"]
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "API_PREFIX": "/api",
+    "API_VERSION": "v1",
+    "LOG_LEVEL": "warn",
+    "ENABLE_SQL_LOGGING": "false",
+    "DICEBEAR_API_URL": "https://api.dicebear.com",
+    "WEATHER_API_URL": "https://wttr.in",
+    "RATE_LIMIT_WINDOW_MS": "900000",
+    "RATE_LIMIT_MAX_REQUESTS": "100",
+    "BCRYPT_ROUNDS": "12"
+  }
+}

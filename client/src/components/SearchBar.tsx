@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../api/axios';
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 type UserPreview = {
   id: string;
@@ -13,15 +13,13 @@ type UserPreview = {
 interface Props {
   placeholder?: string;
   onSelect?: (user: UserPreview) => void;
-  endpoint?: string;
 }
 
 export default function SearchBar({
-  placeholder = 'Search users...',
+  placeholder = "Search users...",
   onSelect,
-  endpoint = '/users?search=',
 }: Props) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState<UserPreview[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -39,8 +37,8 @@ export default function SearchBar({
         setOpen(false);
       }
     }
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
   }, []);
 
   // Debounced search
@@ -56,11 +54,11 @@ export default function SearchBar({
 
     timeoutRef.current = window.setTimeout(async () => {
       try {
-        const res = await api.get(`${endpoint}${encodeURIComponent(query)}`);
+        const res = await api.get(`/users?search=${encodeURIComponent(query)}`);
         setResults(res.data || []);
         setOpen(true);
       } catch (err) {
-        console.error('Search error:', err);
+        console.error("Search error:", err);
         setResults([]);
         setOpen(false);
       } finally {
@@ -71,10 +69,10 @@ export default function SearchBar({
     return () => {
       if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
     };
-  }, [query, endpoint]);
+  }, [query]);
 
   const handleSelect = (user: UserPreview) => {
-    setQuery('');
+    setQuery("");
     setOpen(false);
     if (onSelect) {
       onSelect(user);
@@ -93,32 +91,13 @@ export default function SearchBar({
             if (results.length) setOpen(true);
           }}
           placeholder={placeholder}
-          className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400"
+          className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 w-full"
         />
 
         {/* search icon on the right */}
         <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
           {loading ? (
-            <svg
-              className="w-5 h-5 animate-spin text-pink-400"
-              viewBox="0 0 24 24"
-              fill="black"
-            >
-              <circle
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-                opacity="0.25"
-              />
-              <path
-                d="M22 12a10 10 0 00-10-10"
-                stroke="currentColor"
-                strokeWidth="4"
-                strokeLinecap="round"
-              />
-            </svg>
+            <div className="w-5 h-5 border-2 border-pink-400 border-t-transparent rounded-full animate-spin" />
           ) : (
             <svg
               className="w-5 h-5 text-pinkyDark"
@@ -139,7 +118,7 @@ export default function SearchBar({
 
       {/* Dropdown */}
       {open && results.length > 0 && (
-        <div className="absolute z-50 mt-2 w-full  border border-blue-300 rounded-lg shadow-lg overflow-hidden">
+        <div className="absolute z-50 mt-2 w-full bg-white border border-blue-300 rounded-lg shadow-lg overflow-hidden">
           <ul className="divide-y">
             {results.map((u) => (
               <li
@@ -156,13 +135,13 @@ export default function SearchBar({
                     />
                   ) : (
                     <span className="text-sm text-pinky-600 font-semibold">
-                      {((u.firstName || '')[0] ?? '').toUpperCase()}
+                      {((u.firstName || "")[0] ?? "").toUpperCase()}
                     </span>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-blue-400 truncate">
-                    {u.firstName || ''} {u.lastName || ''}
+                    {u.firstName || ""} {u.lastName || ""}
                   </div>
                   <div className="text-xs text-gray-500 truncate">
                     {u.email}
@@ -178,7 +157,7 @@ export default function SearchBar({
       {/* No results dropdown */}
       {open && !loading && results.length === 0 && (
         <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm text-gray-600">
-          No results
+          No users found
         </div>
       )}
     </div>
