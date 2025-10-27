@@ -1,5 +1,5 @@
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
+import { NavLink, useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -7,15 +7,15 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     setCurrentUser(null);
-    navigate('/users');
+    navigate("/users");
   };
 
   // Unified styles for all NavLinks
   const linkClass = (isActive: boolean) =>
     `flex items-center gap-2 px-4 py-2 rounded-lg font-medium hover:bg-sky-100 dark:hover:bg-sky-500 ${
       isActive
-        ? 'bg-sky-400 dark:bg-sky-500 text-white'
-        : 'text-gray-800 dark:text-gray-200'
+        ? "bg-sky-400 dark:bg-sky-500 text-white"
+        : "text-gray-800 dark:text-gray-200"
     }`;
 
   return (
@@ -44,6 +44,12 @@ export default function Sidebar() {
                 className={({ isActive }) => linkClass(isActive)}
               >
                 🎮 Games
+              </NavLink>
+              <NavLink
+                to={`/statistics/games/`}
+                className={({ isActive }) => linkClass(isActive)}
+              >
+                🎮 Statistics
               </NavLink>
 
               <NavLink

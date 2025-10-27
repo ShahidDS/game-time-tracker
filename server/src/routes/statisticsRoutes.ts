@@ -8,6 +8,7 @@ import {
 
 const router = express.Router();
 
+router.get("/games", gameStatsAllUser);
 router.get("/topPlayer/:gameId", gameTopPlayerStats);
 router.get("/games/:gameId", gameStatsAllUser);
 router.get("/:id", userStats);
