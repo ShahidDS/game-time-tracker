@@ -1,6 +1,7 @@
 import BarChart from "../components/BarChart";
 import TopPlayersTable from "../components/TopPlayersTable";
 import LineChart from "../components/LineChart";
+import ScatterChart from "../components/ScatterChart";
 
 import "chart.js/auto";
 import { defaults } from "chart.js";
@@ -54,6 +55,40 @@ export default function GameStatistics() {
   const [selectedGameId, setSelectedGameId] = useState<number | null>(null);
   const [gameOptions, setGameOptions] = useState<Game[]>([]);
   const [dailyPlayTime, setDailyPlayTime] = useState<DailyPlayTime[]>([]);
+
+  const [selectedScatterGameId, setSelectedScatterGameId] = useState<
+    number | null
+  >(null);
+  const [scatterWeeklyStats, setScatterWeeklyStats] = useState<
+    { numOfSessionsPerWeek: number; averageSessionLengthPerWeek: number }[]
+  >([]);
+
+  const fetchScatterWeeklyStats = async (gameId: number) => {
+    if (!numericUserId) return;
+    try {
+      const response = await api.get<WeeklyStatsResponse>(
+        `/statistics/${numericUserId}/${gameId}`
+      );
+
+      const { numOfSessionsPerWeek, averageSessionLengthPerWeek } =
+        response.data.weeklyStats;
+
+      setScatterWeeklyStats([
+        { numOfSessionsPerWeek, averageSessionLengthPerWeek },
+      ]);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to fetch scatter chart data"
+      );
+    }
+  };
+  useEffect(() => {
+    if (selectedScatterGameId !== null) {
+      fetchScatterWeeklyStats(selectedScatterGameId);
+    }
+  }, [selectedScatterGameId]);
 
   const fetchGameIds = async () => {
     const response = await api.get<Game[]>("/games");
@@ -173,6 +208,37 @@ export default function GameStatistics() {
       <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md mb-6">
         <TopPlayersTable topPlayers={topPlayers} />
       </div>
+      {/*  Scatter Chart Section */}
+      <h2 className="text-2xl font-bold mb-4 text-pink-500">
+        Weekly Session Statistics:
+      </h2>
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md mb-6">
+        {/* Dropdown */}
+        <div className="flex justify-end mb-4">
+          <select
+            value={selectedScatterGameId ?? ""}
+            onChange={(e) => setSelectedScatterGameId(Number(e.target.value))}
+            className="border border-gray-300 rounded-md p-2"
+          >
+            <option value="">Select a Game</option>
+            {gameOptions.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Scatter Chart */}
+        {selectedScatterGameId ? (
+          <ScatterChart weeklyStats={scatterWeeklyStats} />
+        ) : (
+          <div className="text-gray-500 text-center py-10">
+            Please select a game
+          </div>
+        )}
+      </div>
+
       {/* Line Chart */}
       {/* Daily Play Time */}
       <h2 className="text-2xl font-bold mb-4 text-pink-500">
