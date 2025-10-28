@@ -1,5 +1,5 @@
-import { Bar } from 'react-chartjs-2';
-import type { ChartOptions } from 'chart.js';
+import { Bar } from "react-chartjs-2";
+import type { ChartOptions } from "chart.js";
 
 type BarChartProps = {
   sessions: { game: string; totalMinutes: number }[];
@@ -11,16 +11,17 @@ export default function BarChart({ sessions, colors }: BarChartProps) {
     labels: sessions.map((s) => s.game),
     datasets: [
       {
-        label: 'Total Minutes Played',
-        data: sessions.map((s) => s.totalMinutes),
+        label: "Total Minutes Played",
+        // convert seconds to minutes (rounded)
+        data: sessions.map((s) => Math.round(s.totalMinutes / 60)),
         backgroundColor: sessions.map((_, idx) => colors[idx % colors.length]),
         borderRadius: 8,
       },
     ],
   };
 
-  const options: ChartOptions<'bar'> = {
-    indexAxis: 'y' as const,
+  const options: ChartOptions<"bar"> = {
+    indexAxis: "y" as const,
     responsive: true,
     plugins: {
       legend: {
@@ -28,20 +29,20 @@ export default function BarChart({ sessions, colors }: BarChartProps) {
       },
       title: {
         display: true,
-        text: 'Total Playtime per Game',
-        color: '#f15bb5',
+        text: "Total Playtime per Game",
+        color: "#f15bb5",
         font: {
           size: 16,
-          weight: 'bold',
+          weight: "bold",
         },
       },
     },
     scales: {
       x: {
-        ticks: { color: '#888' },
+        ticks: { color: "#888" },
       },
       y: {
-        ticks: { color: '#888' },
+        ticks: { color: "#888" },
         beginAtZero: true,
       },
     },
