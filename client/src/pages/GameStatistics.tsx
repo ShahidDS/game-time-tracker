@@ -2,7 +2,6 @@ import BarChart from "../components/BarChart";
 import TopPlayersTable from "../components/TopPlayersTable";
 import LineChart from "../components/LineChart";
 import ScatterChart from "../components/ScatterChart";
-
 import "chart.js/auto";
 import { defaults } from "chart.js";
 import api from "../api/axios";
@@ -40,6 +39,20 @@ interface WeeklyStatsResponse {
   };
 }
 
+interface UserInfo {
+  id: number;
+  firstName?: string;
+  lastName?: string;
+}
+
+interface AllUserWeeklyStat {
+  userId: number;
+  username: string;
+  numOfSessionsPerWeek: number;
+  averageSessionLengthPerWeek: number;
+  isCurrentUser: boolean;
+}
+
 export default function GameStatistics() {
   const { userId } = useParams<{ userId: string }>();
   const numericUserId = userId ? Number(userId) : null;
@@ -59,36 +72,10 @@ export default function GameStatistics() {
   const [selectedScatterGameId, setSelectedScatterGameId] = useState<
     number | null
   >(null);
+
   const [scatterWeeklyStats, setScatterWeeklyStats] = useState<
-    { numOfSessionsPerWeek: number; averageSessionLengthPerWeek: number }[]
+    AllUserWeeklyStat[]
   >([]);
-
-  const fetchScatterWeeklyStats = async (gameId: number) => {
-    if (!numericUserId) return;
-    try {
-      const response = await api.get<WeeklyStatsResponse>(
-        `/statistics/${numericUserId}/${gameId}`
-      );
-
-      const { numOfSessionsPerWeek, averageSessionLengthPerWeek } =
-        response.data.weeklyStats;
-
-      setScatterWeeklyStats([
-        { numOfSessionsPerWeek, averageSessionLengthPerWeek },
-      ]);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to fetch scatter chart data"
-      );
-    }
-  };
-  useEffect(() => {
-    if (selectedScatterGameId !== null) {
-      fetchScatterWeeklyStats(selectedScatterGameId);
-    }
-  }, [selectedScatterGameId]);
 
   const fetchGameIds = async () => {
     const response = await api.get<Game[]>("/games");
@@ -99,18 +86,7 @@ export default function GameStatistics() {
     console.log("Fetched Game IDs:", ids);
     return ids;
   };
-  /*
-  const fetchGameNames1 = async () => {
-    try {
-      const response = await api.get<Game[]>("/games");
-      const names = response.data.map((game) => game.name);
-      setGameOptions(names);
-      console.log("Fetched Game Names:", names);
-      return names;
-    } catch (err) {
-      console.error("Error fetching game names:", err);
-    }
-  };*/
+
   const fetchGames = async () => {
     try {
       const dataForEachGame = gameIds.map(async (gameId) => {
@@ -166,6 +142,49 @@ export default function GameStatistics() {
     }
   };
 
+  const fetchScatterWeeklyStats = async (gameId: number) => {
+    try {
+      const { data: users } = await api.get<UserInfo[]>("/users");
+      if (!users) {
+        setError("No users found");
+        return;
+      }
+
+      // weekly stats for all users
+      const statsResults = await Promise.allSettled(
+        users.map(async (user) => {
+          const resp = await api.get<WeeklyStatsResponse>(
+            `/statistics/${user.id}/${gameId}`
+          );
+          const ws = resp.data.weeklyStats;
+
+          return {
+            userId: user.id,
+            username: user.firstName ?? user.lastName ?? `User ${user.id}`,
+            numOfSessionsPerWeek: ws.numOfSessionsPerWeek,
+            averageSessionLengthPerWeek: ws.averageSessionLengthPerWeek,
+            isCurrentUser: user.id === numericUserId, //  current user
+          } as AllUserWeeklyStat;
+        })
+      );
+
+      const weeklyStats: AllUserWeeklyStat[] = statsResults
+        .filter(
+          (r): r is PromiseFulfilledResult<AllUserWeeklyStat> =>
+            r.status === "fulfilled"
+        )
+        .map((r) => r.value);
+
+      setScatterWeeklyStats(weeklyStats);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to fetch scatter chart data"
+      );
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       await fetchGameIds();
@@ -185,6 +204,12 @@ export default function GameStatistics() {
       fetchDailyPlayTime(selectedGameId);
     }
   }, [selectedGameId]);
+
+  useEffect(() => {
+    if (selectedScatterGameId !== null) {
+      fetchScatterWeeklyStats(selectedScatterGameId);
+    }
+  }, [selectedScatterGameId]);
 
   if (loading) {
     return <div className="p-6">Loading game statistics...</div>;

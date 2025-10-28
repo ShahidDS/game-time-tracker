@@ -1,79 +1,91 @@
 import { Scatter } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  PointElement,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import "chart.js/auto";
 
-ChartJS.register(PointElement, LinearScale, Title, Tooltip, Legend);
-
-interface ScatterChartProps {
-  weeklyStats: {
-    numOfSessionsPerWeek: number;
-    averageSessionLengthPerWeek: number;
-  }[];
+interface UserWeeklyStat {
+  userId: number;
+  username: string;
+  numOfSessionsPerWeek: number;
+  averageSessionLengthPerWeek: number;
+  isCurrentUser: boolean;
 }
 
-export default function ScatterChart({ weeklyStats }: ScatterChartProps) {
+interface Props {
+  weeklyStats: UserWeeklyStat[];
+  color?: string;
+  height?: number | string;
+}
+
+export default function ScatterChart({
+  weeklyStats,
+  color = "#f15bb5",
+  height = 360,
+}: Props) {
+  const labels = weeklyStats.map((s) => s.username);
+  const dataPoints = weeklyStats.map((s) => ({
+    x: s.numOfSessionsPerWeek,
+    y: s.averageSessionLengthPerWeek,
+    label: s.username,
+  }));
+
+  const backgroundColors = weeklyStats.map((s) =>
+    s.isCurrentUser ? color : "rgba(255,255,255,0)"
+  );
+  const borderColors = weeklyStats.map(() => color);
+  const radii = weeklyStats.map((s) => (s.isCurrentUser ? 9 : 7));
+  const borderWidths = weeklyStats.map((s) => (s.isCurrentUser ? 2.5 : 2));
+
   const data = {
+    labels,
     datasets: [
       {
-        label: "Weekly Play Stats",
-        data: weeklyStats.map((stat) => ({
-          x: stat.numOfSessionsPerWeek,
-          y: stat.averageSessionLengthPerWeek,
-        })),
-        backgroundColor: "#8457F6",
-        borderColor: "#8457F6",
-        pointRadius: 6,
+        label: "Players",
+        data: dataPoints,
+        backgroundColor: backgroundColors,
+        borderColor: borderColors,
+        pointRadius: radii.map((r) => r / 2),
+        pointBorderWidth: borderWidths,
+        pointHoverRadius: radii.map((r) => r / 2 + 1),
+        pointStyle: "circle" as const,
       },
     ],
   };
 
+  // dynamic axis ranges with padding
+  const maxX =
+    Math.max(...weeklyStats.map((d) => d.numOfSessionsPerWeek || 0), 0) + 2;
+  const maxY =
+    Math.max(...weeklyStats.map((d) => d.averageSessionLengthPerWeek || 0), 0) +
+    50;
+
   const options = {
-    responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      title: {
-        display: true,
-        text: "Average Session Length vs. Sessions per Week",
-      },
     },
     scales: {
       x: {
-        title: { display: true, text: "Sessions per Week" },
+        title: { display: true, text: "Number of Sessions" },
         beginAtZero: true,
-
+        offset: true,
+        min: 0,
+        suggestedMax: maxX,
         ticks: {
           stepSize: 1,
           callback: (value: number | string) => Number(value).toFixed(0),
         },
-
-        suggestedMin: 0,
-        suggestedMax:
-          Math.max(...weeklyStats.map((d) => d.numOfSessionsPerWeek)) + 2,
         grid: {
           drawBorder: false,
           color: "rgba(200,200,200,0.2)",
         },
       },
       y: {
-        title: { display: true, text: "Average Session Length (minutes)" },
+        title: { display: true, text: "Average session time (minutes)" },
         beginAtZero: true,
-        offset: true,
-
+        suggestedMax: maxY,
         ticks: {
-          stepSize: 30,
+          stepSize: Math.ceil(maxY / 5), // keeps ~5 grid lines max
           callback: (value: number | string) => Number(value).toFixed(0),
         },
-
-        suggestedMax:
-          Math.max(...weeklyStats.map((d) => d.averageSessionLengthPerWeek)) +
-          50,
         grid: {
           drawBorder: false,
           color: "rgba(200,200,200,0.2)",
@@ -83,7 +95,7 @@ export default function ScatterChart({ weeklyStats }: ScatterChartProps) {
   };
 
   return (
-    <div className="h-[340px]">
+    <div style={{ height }}>
       <Scatter data={data} options={options} />
     </div>
   );
