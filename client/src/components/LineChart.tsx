@@ -13,34 +13,15 @@ interface LineChartProps {
 
 export default function LineChart({ dailyPlayTime, colors }: LineChartProps) {
   if (!dailyPlayTime || dailyPlayTime.length === 0) {
-    return <div>No play time data available</div>;
+    return <div> Game Not Played Yet </div>;
   }
 
-  const sortedData = [...dailyPlayTime].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
+  const displayData = dailyPlayTime.map((d) => ({
+    date: d.date,
+    minutes: Math.round(d.minutes / 60),
+  }));
 
-  const displayData = [...sortedData];
-
-  // Backup display data if less than 2 data points
-  if (sortedData.length < 2) {
-    const lastDate = new Date(sortedData[sortedData.length - 1].date);
-    for (let i = 1; i < 4; i++) {
-      const newDate = new Date(lastDate);
-      newDate.setDate(lastDate.getDate() + i);
-      displayData.push({
-        date: newDate.toISOString().split("T")[0],
-        minutes: Math.floor(
-          sortedData[sortedData.length - 1].minutes *
-            (0.8 + Math.random() * 0.4)
-        ),
-      });
-    }
-  }
-
-  //
-
-  const maxValue = Math.max(...sortedData.map((d) => d.minutes)) || 0;
+  const maxValue = Math.max(...displayData.map((d) => d.minutes)) || 0;
   const data = {
     labels: displayData.map((entry) => entry.date),
     datasets: [

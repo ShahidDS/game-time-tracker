@@ -1,4 +1,4 @@
-import BarChart from "../components/BarChart";
+import BarChart from "../components/BarChartAll";
 import TopPlayersTable from "../components/TopPlayersTable";
 import LineChart from "../components/LineChart";
 import ScatterChart from "../components/ScatterChart";
