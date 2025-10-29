@@ -11,7 +11,6 @@ const prisma = new PrismaClient();
 
 export const userStats = async (req: Request, res: Response) => {
   const { id } = req.params;
-  //const { gameId } = req.query;
 
   try {
     const user = await prisma.user.findUnique({
@@ -28,13 +27,11 @@ export const userStats = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Group play sessions by game and sum up the minutes played
+    // Group play sessions by game
     const gameAggregations = await prisma.playSession.groupBy({
       by: ["gameId"],
       where: { userId: Number(id) },
       _sum: { minutesPlayed: true },
-      //_count: { _all: true },
-      //_avg: { minutesPlayed: true },
     });
 
     // Fetch game details for those game IDs
@@ -87,7 +84,6 @@ export const userStats = async (req: Request, res: Response) => {
     const validatedResponse = userStatsResponseSchema.parse(response);
 
     res.json(validatedResponse);
-    //res.json(response);
   } catch (error) {
     console.error("Error fetching user stats:", error);
     res.status(500).json({ error: "Failed to fetch user stats" });
@@ -107,12 +103,7 @@ export const gameBasedStats = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Compute date 7 days ago
-    //const oneMonthAgo = subMonths(new Date(), 1);
-    //console.log(oneMonthAgo);
-    //const sevenDaysAgo = subDays(new Date(), 7);
-    const sevenDaysAgo = subMonths(new Date(), 1);
-    //console.log(sevenDaysAgo);
+    const sevenDaysAgo = subDays(new Date(), 7);
 
     // All sessions within the last 7 days for the game
     const sessions = await prisma.playSession.findMany({
@@ -267,8 +258,6 @@ export const gameTopPlayerStats = async (req: Request, res: Response) => {
         : "Unknown Player",
       totalMinutesPlayed: topPlayer._sum.minutesPlayed ?? 0,
     };
-
-    //const validatedResponse = gameDataForAllSchema.parse(response);
 
     res.json(response);
   } catch (error) {

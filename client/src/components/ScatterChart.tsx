@@ -1,5 +1,6 @@
 import { Scatter } from "react-chartjs-2";
 import "chart.js/auto";
+import type { TooltipItem } from "chart.js";
 
 interface UserWeeklyStat {
   userId: number;
@@ -20,11 +21,11 @@ export default function ScatterChart({
   color = "#f15bb5",
   height = 360,
 }: Props) {
-  const labels = weeklyStats.map((s) => s.username);
+  const labels = weeklyStats.map(() => "(numOfSessions , avgSessionLength):");
   const dataPoints = weeklyStats.map((s) => ({
+    label: s.username,
     x: s.numOfSessionsPerWeek,
     y: Math.ceil(s.averageSessionLengthPerWeek / 60), // convert seconds → minutes and round up
-    label: s.username,
   }));
 
   const backgroundColors = weeklyStats.map((s) =>
@@ -38,7 +39,7 @@ export default function ScatterChart({
     labels,
     datasets: [
       {
-        label: "(numOfSessions, avgSessionLength)",
+        label: "Sessions per week vs Average Session Length",
         data: dataPoints,
         backgroundColor: backgroundColors,
         borderColor: borderColors,
@@ -65,6 +66,18 @@ export default function ScatterChart({
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (context: TooltipItem<"scatter">) => {
+            const point = context.raw as {
+              x: number;
+              y: number;
+              label: string;
+            };
+            return `${point.label}: (${point.x} sessions, ${point.y} minutes)`;
+          },
+        },
+      },
     },
     scales: {
       x: {

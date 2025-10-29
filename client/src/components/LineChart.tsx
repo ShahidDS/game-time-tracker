@@ -53,7 +53,7 @@ export default function LineChart({
       const color = isCurrent ? colors[0] : mutedGray;
 
       datasets.push({
-        label: u.username,
+        label: "Minutes played by " + u.username.toUpperCase() + "",
         data: mins,
         fill: false,
         borderColor: color,
@@ -76,7 +76,7 @@ export default function LineChart({
     });
 
     datasets.push({
-      label: "Playtime (minutes per day)",
+      label: "Minutes played",
       data: mins,
       fill: false,
       borderColor: colors[0],
