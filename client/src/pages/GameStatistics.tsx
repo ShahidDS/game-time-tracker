@@ -53,15 +53,22 @@ interface AllUserWeeklyStat {
   isCurrentUser: boolean;
 }
 
+interface AllUserDailyPlayTime {
+  userId: number;
+  username: string;
+  dailyPlayTime: DailyPlayTime[];
+}
+
 export default function GameStatistics() {
   const { userId } = useParams<{ userId: string }>();
-  const numericUserId = userId ? Number(userId) : null;
+  const numericUserId = userId ? Number(userId) : 0;
 
   const chartColors = ["#f15bb5", "#00A6F4", "#8457F6", "#00bb72"];
   const [gameIds, setGameIds] = useState<number[]>([]);
   const [games, setGames] = useState<{ game: string; totalMinutes: number }[]>(
     []
   );
+  const [usersInfo, setUsersInfo] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [topPlayers, setTopPlayers] = useState<TopPlayers[]>([]);
@@ -75,6 +82,10 @@ export default function GameStatistics() {
 
   const [scatterWeeklyStats, setScatterWeeklyStats] = useState<
     AllUserWeeklyStat[]
+  >([]);
+
+  const [allUsersDailyPlayTime, setAllUsersDailyPlayTime] = useState<
+    AllUserDailyPlayTime[]
   >([]);
 
   const fetchGameIds = async () => {
@@ -133,7 +144,7 @@ export default function GameStatistics() {
         `/statistics/${numericUserId}/${gameId}`
       );
       const dailyData = response.data.weeklyStats.minutesPlayedPerDayInAWeek;
-      console.log("Daily Play Time Data:", dailyData);
+      console.log("Daily Play Time Data (current user):", dailyData);
       setDailyPlayTime(dailyData);
     } catch (err) {
       setError(
@@ -142,28 +153,37 @@ export default function GameStatistics() {
     }
   };
 
+  const fetchAllUsers = async () => {
+    try {
+      const response = await api.get<UserInfo[]>("/users");
+      const usersInfo = response.data.map((user) => ({
+        id: user.id,
+        firstName: user.firstName ?? `User ${user.id}`,
+        lastName: user.lastName ?? `User ${user.id}`,
+      }));
+      setUsersInfo(usersInfo);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch users information"
+      );
+    }
+  };
+
   const fetchScatterWeeklyStats = async (gameId: number) => {
     try {
-      const { data: users } = await api.get<UserInfo[]>("/users");
-      if (!users) {
-        setError("No users found");
-        return;
-      }
-
-      // weekly stats for all users
+      const users = usersInfo;
       const statsResults = await Promise.allSettled(
         users.map(async (user) => {
           const resp = await api.get<WeeklyStatsResponse>(
             `/statistics/${user.id}/${gameId}`
           );
           const ws = resp.data.weeklyStats;
-
           return {
             userId: user.id,
             username: user.firstName ?? user.lastName ?? `User ${user.id}`,
             numOfSessionsPerWeek: ws.numOfSessionsPerWeek,
             averageSessionLengthPerWeek: ws.averageSessionLengthPerWeek,
-            isCurrentUser: user.id === numericUserId, //  current user
+            isCurrentUser: user.id === numericUserId,
           } as AllUserWeeklyStat;
         })
       );
@@ -175,6 +195,8 @@ export default function GameStatistics() {
         )
         .map((r) => r.value);
 
+      console.log("Weekly Stats:", weeklyStats);
+
       setScatterWeeklyStats(weeklyStats);
     } catch (err) {
       setError(
@@ -185,9 +207,45 @@ export default function GameStatistics() {
     }
   };
 
+  const fetchAllUsersDailyPlayTime = async (gameId: number) => {
+    try {
+      const users = usersInfo;
+      const results = await Promise.allSettled(
+        users.map(async (user) => {
+          const resp = await api.get<WeeklyStatsResponse>(
+            `/statistics/${user.id}/${gameId}`
+          );
+          const daily = resp.data.weeklyStats.minutesPlayedPerDayInAWeek;
+          return {
+            userId: user.id,
+            username: user.firstName ?? user.lastName ?? `User ${user.id}`,
+            dailyPlayTime: daily,
+          } as AllUserDailyPlayTime;
+        })
+      );
+
+      const usersDaily: AllUserDailyPlayTime[] = results
+        .filter(
+          (r): r is PromiseFulfilledResult<AllUserDailyPlayTime> =>
+            r.status === "fulfilled"
+        )
+        .map((r) => r.value);
+
+      console.log("All users daily play time:", usersDaily);
+      setAllUsersDailyPlayTime(usersDaily);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to fetch all users daily play time"
+      );
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       await fetchGameIds();
+      await fetchAllUsers();
     };
     loadData();
   }, []);
@@ -202,8 +260,10 @@ export default function GameStatistics() {
   useEffect(() => {
     if (selectedGameId !== null) {
       fetchDailyPlayTime(selectedGameId);
+
+      fetchAllUsersDailyPlayTime(selectedGameId);
     }
-  }, [selectedGameId]);
+  }, [selectedGameId, usersInfo]);
 
   useEffect(() => {
     if (selectedScatterGameId !== null) {
@@ -286,7 +346,22 @@ export default function GameStatistics() {
           </select>
         </div>
 
-        <LineChart dailyPlayTime={dailyPlayTime} colors={chartColors} />
+        {selectedGameId === null ? (
+          <div className="text-gray-500 text-center py-10">
+            Please select a game
+          </div>
+        ) : !Array.isArray(dailyPlayTime) || dailyPlayTime.length === 0 ? (
+          <div className="text-gray-500 text-center py-10">
+            This game is not played yet!
+          </div>
+        ) : (
+          <LineChart
+            dailyPlayTime={dailyPlayTime}
+            usersDailyPlayTime={allUsersDailyPlayTime}
+            colors={chartColors}
+            currentUserId={numericUserId}
+          />
+        )}
       </div>
     </div>
   );

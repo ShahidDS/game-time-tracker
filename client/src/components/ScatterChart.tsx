@@ -31,14 +31,14 @@ export default function ScatterChart({
     s.isCurrentUser ? color : "rgba(255,255,255,0)"
   );
   const borderColors = weeklyStats.map(() => color);
-  const radii = weeklyStats.map((s) => (s.isCurrentUser ? 9 : 7));
+  const radii = weeklyStats.map((s) => (s.isCurrentUser ? 10 : 7));
   const borderWidths = weeklyStats.map((s) => (s.isCurrentUser ? 2.5 : 2));
 
   const data = {
     labels,
     datasets: [
       {
-        label: "Sessions",
+        label: "(numOfSessions, avgSessionLength)",
         data: dataPoints,
         backgroundColor: backgroundColors,
         borderColor: borderColors,
