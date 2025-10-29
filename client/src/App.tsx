@@ -7,6 +7,7 @@ import Users from "./pages/Users";
 import Profile from "./pages/Profile";
 import Games from "./pages/Games";
 import GameSession from "./pages/GameSession";
+import GameStatistics from "./pages/GameStatistics";
 
 export default function App() {
   return (
@@ -29,7 +30,7 @@ export default function App() {
               path="/games/session/:gameId/:userId"
               element={<GameSession />}
             />
-            
+            <Route path="/statistics/:userId" element={<GameStatistics />} />
           </Routes>
         </main>
       </div>

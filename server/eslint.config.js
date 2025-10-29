@@ -2,7 +2,6 @@ import eslintPluginTs from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import prettier from 'eslint-config-prettier';
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
   {
     files: ['**/*.ts', '**/*.tsx'],

@@ -31,8 +31,8 @@ export default function Profile() {
 
   const chartColors = [
     '#f15bb5',
-    '#5bc0eb',
-    '#9b5de5',
+    '#00A6F4',
+    '#8457F6',
     '#00bb72',
     '#fee440',
     '#ff6f59',

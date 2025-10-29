@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { type User } from '../types';
 import toast from 'react-hot-toast';
+import { isAxiosError } from 'axios';
 
 interface RegisterFormProps {
   onSuccess?: (user: User) => void;
@@ -37,7 +38,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       const user: User = res.data;
 
-      // Optional: upload photo if selected
+      // Optional: upload photo 
       if (photoRef.current) {
         const form = new FormData();
         form.append('photo', photoRef.current);
@@ -47,16 +48,17 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       }
 
       toast.success('🎉 User created successfully!');
-      setTimeout(() => navigate('/users'), 1500);
+      setTimeout(() => navigate('/users'), 2000);
 
       if (onSuccess) onSuccess(user);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+      
+    } catch (err: unknown) {
       console.error(err);
-      if (err.response?.data?.error?.includes('Email already exists')) {
+      
+      if (isAxiosError(err) && err.response?.data?.error?.includes('Email already exists')) {
         toast.error('⚠️ Email already exists. Please use another.');
       } else {
-        toast.error('❌ Could not register user. Try again.');
+        toast.error('⁉️ Email already exists. Please use another.');
       }
     }
   };
@@ -92,7 +94,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       />
       <button
         type="submit"
-        className="bg-blue-400 text-white rounded-xl px-4 py-2 hover:bg-blue-500 cursor-pointer"
+        className="bg-sky-500 text-white rounded-xl px-4 py-2 hover:bg-sky-600 cursor-pointer"
       >
         Add User
       </button>

@@ -29,7 +29,7 @@ export default function BarChart({ sessions, colors }: BarChartProps) {
       },
       title: {
         display: true,
-        text: "Total Playtime per Game",
+        text: "Amount of minutes played per day by all",
         color: "#f15bb5",
         font: {
           size: 16,

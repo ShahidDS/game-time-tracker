@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 import api from '../api/axios';
-import RegisterForm from '../components/RegitsterForm';
 import { type User } from '../types';
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [showForm, setShowForm] = useState(false);
   const navigate = useNavigate();
+  const { setCurrentUser } = useUser();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -28,14 +28,10 @@ export default function Users() {
     fetchUsers();
   }, []);
 
-  const handleUserAdded = (newUser: User) => {
-    setUsers((prev) => [newUser, ...prev]);
-    setShowForm(false);
-  };
-
-  // Navigate to Games page with userId
-  const handlePlayGame = (userId: string) => {
-    navigate(`/games/${userId}`);
+  // Navigate to Games page with user
+  const handlePlayGame = (user: User) => {
+    setCurrentUser(user);
+    navigate(`/games/${user.id}`);
   };
 
   return (
@@ -43,8 +39,8 @@ export default function Users() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold ">Users</h2>
         <button
-          onClick={() => setShowForm(true)}
-          className="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-500"
+          onClick={() => navigate('/')} 
+          className="bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600"
         >
           Add New User
         </button>
@@ -89,7 +85,7 @@ export default function Users() {
                 {user.email}
               </p>
               <button
-                onClick={() => handlePlayGame(user.id)}
+                onClick={() => handlePlayGame(user)}
                 className="mt-2 bg-pink-400 text-white px-4 py-2 rounded-lg hover:bg-pink-500"
               >
                 Play Game
@@ -99,22 +95,6 @@ export default function Users() {
         </div>
       )}
 
-      {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl w-full max-w-md relative">
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200"
-              onClick={() => setShowForm(false)}
-            >
-              ✖
-            </button>
-            <h3 className="text-xl font-semibold mb-4 text-pinkyDark">
-              Add New User
-            </h3>
-            <RegisterForm onSuccess={handleUserAdded} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
