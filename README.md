@@ -1,26 +1,19 @@
 # 🎮 Game Time Tracker
 
-A full-stack application that allows users to track their gaming sessions and compare statistics with other players.
+A full-stack application that allows users to play games, track their progress and compare statistics with other players.
 
 ## 🚀 Features
 
-- **Track Play Time**: Start and stop timers for different games
-- **Player Statistics**: View your total play time per game
-- **Global Leaderboard**: Compare your stats with other players
-- **Session History**: See all your previous gaming sessions
-- **Real-time Updates**: Live statistics and session tracking
+- **Track Play Time**: Use a timer to track time for different games
+- **Player Statistics**: Diiferent graph and chart shows play statistics based on daily and weekly data
+- **Leaderboard**: Compare stattistics with other players
 
 ## 🛠 Tech Stack
 
 - **Frontend**: React + TypeScript + Vite
 - **Backend**: Express + TypeScript + Node.js
 - **Database**: PostgreSQL
-- **Containerization**: Docker + Docker Compose
 
-## 📁 Project Structure
-# game-time-tracker
-
----
 
 ## 🗃️ ER Diagram
 The database of four tables:
@@ -85,3 +78,58 @@ model UserStats {
 }
 
 ...
+
+
+## 🛠 How to Run:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ShahidDS/game-time-tracker.git
+   cd game-time-tracker
+   ```
+
+2. Install dependencies for both client and server:
+   ```bash
+   cd client
+   npm install
+   cd ../server
+   npm install
+   ```
+3. Set up Enviromental Variables:
+  -Create a `.env` file in the `server` directory.
+  - Add the following variable in `.env` to configure the database connection:
+    DATABASE_URL="postgresql://username:password@localhost:5432/database_name"
+
+4. Set up the database and apply Prisma migrations:
+     ```bash
+     cd server
+     npm install prisma @prisma/client@latest @prisma/extension-accelerate@latest
+     npx prisma generate --no-engine
+     npx prisma migrate dev
+
+
+5. Seed the database (optional):
+   ```bash
+   npx prisma db seed
+   ```
+
+6. Start the development servers:
+   - **Client**:
+     ```bash
+     cd client
+     npm run dev
+     ```
+   - **Server**:
+     ```bash
+     cd server
+     npm run dev
+     ```
+
+---
+
+## 🎮 Usage
+
+1. Open the client in your browser (default: `http://localhost:5173`).
+2. Start tracking your playtime by playing games and view statistics.
+
+---
