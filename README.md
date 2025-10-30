@@ -22,7 +22,8 @@ A full-stack application that allows users to play games, track their progress a
 The database of four tables:
 User, Game, PlaySession, and UserStats.
 
-![gamesTracker](https://github.com/user-attachments/assets/944819a3-5ba1-427e-8134-604618cc647f)
+![Games-Tracker](https://github.com/user-attachments/assets/9be4e0ae-e23a-4065-a3e9-2d203263034d)
+
 
 <pre>
 User -> PlaySession: One-to-many One user can have many play sessions.
