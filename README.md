@@ -13,10 +13,35 @@ A full-stack application that allows users to play games, track their progress a
 
 ## 🛠 Tech Stack
 
-- **Frontend**: React + TypeScript + Vite
+- **Frontend**: React + TypeScript + Vite + Tailwind CSS
 - **Backend**: Express + TypeScript + Node.js
 - **Database**: PostgreSQL
 
+---
+
+### 🔗 Navbar
+<img width="1286" height="167" alt="NavBar" src="https://github.com/user-attachments/assets/57912160-6ed4-49d9-9bc9-aaad98caedd7" />
+
+### 🧿 Sign Up Page
+<img width="1448" height="740" alt="Singup" src="https://github.com/user-attachments/assets/766054ba-dcee-4de7-8334-16a1b4dc89cd" />
+
+### 👩🏻‍🎤 Users Page
+
+<img width="1444" height="900" alt="Users" src="https://github.com/user-attachments/assets/26f6ba03-70c4-4056-a80c-6e25e365ad09" />
+
+### 🎮 Games Page
+<img width="1443" height="961" alt="Games" src="https://github.com/user-attachments/assets/bca74b5c-ee94-4173-b08a-3c637cd993e3" />
+
+### 🔥 Game Timer Page
+<img width="1438" height="961" alt="Game-sessions" src="https://github.com/user-attachments/assets/08f3ca2c-e729-479b-8ca3-da393542fc3e" />
+
+### 📊 Games Statistics
+
+<img width="1442" height="809" alt="Games-stats" src="https://github.com/user-attachments/assets/6377668b-d482-4de4-85ef-f2b8c199879a" />
+
+<img width="1188" height="955" alt="Weekly-Daily" src="https://github.com/user-attachments/assets/0b1a6b8c-9480-42c2-b762-193e4fcd6783" />
+
+---
 
 ## 🗃️ ER Diagram
 The database of four tables:
