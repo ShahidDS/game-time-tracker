@@ -39,8 +39,8 @@ export default function GameSession() {
   // Start button handler
   const handleStart = () => {
     setStarted(true);
-    setSessionStart(new Date()); 
-    setSeconds(0); 
+    setSessionStart(new Date());
+    setSeconds(0);
   };
 
   // Stop button handler
@@ -50,16 +50,15 @@ export default function GameSession() {
     try {
       if (userId && gameId && sessionStart) {
         const startedAt = sessionStart;
-        // const endedAt = new Date(startedAt.getTime() + seconds * 1000);
+        const endedAt = new Date();
 
-        // Treat seconds as minutes for UX consistency
-        const endedAt = new Date(startedAt.getTime() + seconds * 60000);
-        
-
-        // Calculate minutes played precisely
-        const minutesPlayed = Math.floor(
-          (endedAt.getTime() - startedAt.getTime()) / 60000
+        // Calculate total seconds elapsed
+        const totalSeconds = Math.floor(
+          (endedAt.getTime() - startedAt.getTime()) / 1000
         );
+
+        // Convert to minutes for backend (round down)
+        const minutesPlayed = Math.max(Math.floor(totalSeconds / 60), 0);
 
         // Post session to backend
         const res = await api.post(`/sessions`, {

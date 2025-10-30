@@ -128,7 +128,7 @@ export default function Profile() {
         <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md flex flex-col items-center justify-center">
           {combinedSessions.length > 0 ? (
             <>
-              <h2 className="text-pink-500 text-7xl mb-2">{totalMinutes}</h2>
+              <h2 className="text-pink-500 text-7xl mb-2">{totalMinutes} </h2>
               <p className="text-sm dark:text-gray-400 mb-6">
                 Total minutes played 
               </p>

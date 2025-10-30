@@ -20,8 +20,8 @@ export const createPlaySession = async (req: Request, res: Response) => {
     const start = new Date(startedAt);
     const end = new Date(endedAt);
     const minutesPlayed = Math.max(
-      Math.ceil((end.getTime() - start.getTime()) / 60000),
-      1
+      Math.floor((end.getTime() - start.getTime()) / 60000),
+      0
     );
 
     // ✅ Create session with startedAt and endedAt
