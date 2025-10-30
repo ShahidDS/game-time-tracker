@@ -4,9 +4,12 @@ A full-stack application that allows users to play games, track their progress a
 
 ## 🚀 Features
 
-- **Track Play Time**: Use a timer to track time for different games
+- **Track Play Time**: Use a timer to track time for different games.
+  The timer counts the time as seconds and only when 60 seconds pass we count that time as 1 minute and it get stored in
+   "minutesPlayed" in the "PlaySession" table.
 - **Player Statistics**: Diiferent graph and chart shows play statistics based on daily and weekly data
 - **Leaderboard**: Compare stattistics with other players
+  
 
 ## 🛠 Tech Stack
 
