@@ -105,14 +105,14 @@ export default function GameSession() {
         {started ? (
           <button
             onClick={handleStop}
-            className="ml-4 bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition"
+            className="ml-4 bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition cursor-pointer"
           >
             Stop
           </button>
         ) : (
           <button
             onClick={handleStart}
-            className="ml-4 bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition"
+            className="ml-4 bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition cursor-pointer"
           >
             Start
           </button>

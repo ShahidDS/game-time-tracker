@@ -81,7 +81,7 @@ export default function Sidebar() {
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-6 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 w-full"
+          className="mt-6 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 w-full cursor-pointer"
         >
           🌸 Logout
         </button>

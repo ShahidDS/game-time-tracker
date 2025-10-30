@@ -46,7 +46,7 @@ export default function Games() {
             onClick={() => handleSelectGame(game.id, game.name)}
             className="bg-white dark:bg-gray-800 shadow rounded-xl p-6 text-center hover:bg-pink-100 dark:hover:bg-gray-700 transition"
           >
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 cursor-pointer">
               {game.name}
             </h3>
           </button>
