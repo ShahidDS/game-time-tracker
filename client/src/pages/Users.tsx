@@ -36,14 +36,8 @@ export default function Users() {
 
   return (
     <div className="p-6 min-h-[calc(100vh-128px)]">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold ">Users</h2>
-        <button
-          onClick={() => navigate('/')} 
-          className="bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600 cursor-pointer"
-        >
-          Add New User
-        </button>
+      <div className="flex justify-center items-center mb-6">
+        <h2 className="text-3xl font-bold text-pink-400">Users</h2>
       </div>
 
       {loading ? (

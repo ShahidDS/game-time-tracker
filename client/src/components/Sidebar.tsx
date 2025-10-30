@@ -21,7 +21,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-white dark:bg-gray-800 shadow-lg min-h-screen p-4 hidden md:flex flex-col justify-between">
       <div>
-        <h2 className="text-2xl font-bold text-pink-400 mb-6">Dashboard</h2>
+        <h2 className="text-3xl font-bold text-pink-400 mb-6 text-center">Dashboard</h2>
 
         <nav className="flex flex-col gap-4">
           {/* Always visible links */}
@@ -67,7 +67,7 @@ export default function Sidebar() {
                     {currentUser.firstName[0].toUpperCase()}
                   </span>
                 )}
-                <span>
+                <span className="text-pink-400">
                   {currentUser.firstName} {currentUser.lastName}
                 </span>
               </NavLink>
@@ -81,7 +81,7 @@ export default function Sidebar() {
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-6 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 w-full cursor-pointer"
+          className="mt-6 px-4 py-2 bg-pink-400 text-white rounded-lg hover:bg-pink-500 w-full cursor-pointer"
         >
           🌸 Log Out
         </button>
