@@ -67,6 +67,8 @@ model PlaySession {
   minutesPlayed Int
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  statedAt      DateTime?
+  endedAt       DateTime?
   game          Game     @relation(fields: [gameId], references: [id])
   user          User     @relation(fields: [userId], references: [id])
 }
