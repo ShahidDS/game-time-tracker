@@ -4,18 +4,47 @@ A full-stack application that allows users to play games, track their progress a
 
 ## 🚀 Features
 
+- **User Management**
+  - View user profiles with avatar, name, and total playtime.
+  
+- **Game Sessions**
+  - Start and stop a game session with automatic timer.
+  - Record playtime accurately (minutes and seconds).
+  - Update user, game, and daily stats totals automatically.
+  
+- **Dashboard & Charts**
+  - Line chart displaying users’ daily play.
+  - Horizontal bar chart displaying total minutes played per game.
+  - Doughnut chart displaying percentages of total play time per game.
+  - Scatter chart displaying users’ weekly play.
+  - Real-time chart updates when sessions are added or deleted.
+  - Summary of total minutes played.
+
+- **Session Management**
+  - Delete individual play sessions.
+  - Backend automatically adjusts totals when a session is deleted.
+
+- **Responsive UI**
+  - Works on desktop and mobile devices.
+
 - **Track Play Time**: Use a timer to track time for different games.
   The timer counts the time as seconds and only when 60 seconds pass we count that time as 1 minute and it get stored in
    "minutesPlayed" in the "PlaySession" table.
-- **Player Statistics**: Diiferent graph and chart shows play statistics based on daily and weekly data
-- **Leaderboard**: Compare stattistics with other players
   
+- **Player Statistics**: Diiferent graph and chart shows play statistics based on daily and weekly data.
+  
+- **Leaderboard**: Compare stattistics with other players, showing the top users per game.
+  
+--- 
 
 ## 🛠 Tech Stack
 
-- **Frontend**: React + TypeScript + Vite + Tailwind CSS
-- **Backend**: Express + TypeScript + Node.js
-- **Database**: PostgreSQL
+- **Frontend:** React, TypeScript, Vite, Tailwind CSS, react-router-dom, react-chartjs-2  
+- **Backend:** Node.js, Express, TypeScript, Prisma ORM  
+- **Database:** PostgreSQL  
+- **API Validation:** Zod  
+- **Routing:** React Router  
+- **HTTP Requests:** Axios
 
 ---
 
