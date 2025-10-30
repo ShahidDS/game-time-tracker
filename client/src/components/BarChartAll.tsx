@@ -11,9 +11,8 @@ export default function BarChart({ sessions, colors }: BarChartProps) {
     labels: sessions.map((s) => s.game),
     datasets: [
       {
-        label: "Total Minutes Played",
-        // convert seconds to minutes (rounded)
-        data: sessions.map((s) => Math.round(s.totalMinutes / 60)),
+        label: "Total Minutes Played By All Users",
+        data: sessions.map((s) => s.totalMinutes),
         backgroundColor: sessions.map((_, idx) => colors[idx % colors.length]),
         borderRadius: 8,
       },

@@ -30,7 +30,7 @@ export default function LineChart({
   const useSingle =
     !useMulti && Array.isArray(dailyPlayTime) && dailyPlayTime.length > 0;
 
-  const toMinutes = (secs: number) => Math.round(secs / 60);
+  //const toMinutes = (secs: number) => Math.round(secs / 60);
 
   let labels: string[] = [];
   const datasets = [];
@@ -43,7 +43,7 @@ export default function LineChart({
 
     usersDailyPlayTime.forEach((u) => {
       const mins = u.dailyPlayTime.map((d) => {
-        const m = toMinutes(d.minutes);
+        const m = d.minutes;
         if (m > maxValue) maxValue = m;
         return m;
       });
@@ -70,7 +70,7 @@ export default function LineChart({
   } else if (useSingle && dailyPlayTime) {
     labels = dailyPlayTime.map((d) => d.date);
     const mins = dailyPlayTime.map((d) => {
-      const m = toMinutes(d.minutes);
+      const m = d.minutes;
       if (m > maxValue) maxValue = m;
       return m;
     });

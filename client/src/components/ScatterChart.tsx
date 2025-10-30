@@ -25,7 +25,7 @@ export default function ScatterChart({
   const dataPoints = weeklyStats.map((s) => ({
     label: s.username,
     x: s.numOfSessionsPerWeek,
-    y: Math.ceil(s.averageSessionLengthPerWeek / 60), // convert seconds → minutes and round up
+    y: Math.ceil(s.averageSessionLengthPerWeek), // convert seconds → minutes and round up
   }));
 
   const backgroundColors = weeklyStats.map((s) =>
@@ -56,9 +56,7 @@ export default function ScatterChart({
     Math.max(...weeklyStats.map((d) => d.numOfSessionsPerWeek || 0), 0) + 2;
   const maxY =
     Math.max(
-      ...weeklyStats.map(
-        (d) => Math.ceil(d.averageSessionLengthPerWeek / 60) || 0
-      ),
+      ...weeklyStats.map((d) => Math.ceil(d.averageSessionLengthPerWeek) || 0),
       0
     ) + 2;
 
