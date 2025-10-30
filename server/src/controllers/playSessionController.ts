@@ -11,7 +11,7 @@ const normalizeDate = (date: Date) => {
   return d;
 };
 
-//CREATE play session
+// CREATE play session
 export const createPlaySession = async (req: Request, res: Response) => {
   try {
     const validated = playSessionSchema.parse(req.body);
@@ -20,45 +20,39 @@ export const createPlaySession = async (req: Request, res: Response) => {
     const start = new Date(startedAt);
     const end = new Date(endedAt);
     const minutesPlayed = Math.max(
-      Math.round((end.getTime() - start.getTime()) / 60000),
-      0
+      Math.ceil((end.getTime() - start.getTime()) / 60000),
+      1
     );
 
-    // Create session
+    // ✅ Create session with startedAt and endedAt
     const session = await prisma.playSession.create({
       data: {
         userId,
         gameId,
+        startedAt: start,
+        endedAt: end,
         minutesPlayed,
         createdAt: end,
       },
     });
 
-    // Update user & game totals
+    // ✅ Update totals for user & game
     await prisma.user.update({
       where: { id: userId },
-      data: { totalMinutesPlayed: { increment: minutesPlayed } } as any,
+      data: { totalMinutesPlayed: { increment: minutesPlayed } },
     });
 
     await prisma.game.update({
       where: { id: gameId },
-      data: { totalMinutesPlayed: { increment: minutesPlayed } } as any,
+      data: { totalMinutesPlayed: { increment: minutesPlayed } },
     });
 
-    // Update daily stats (UserStats)
+    // ✅ Update daily stats
     const day = normalizeDate(end);
     await prisma.userStats.upsert({
-      where: {
-        userId_date: { userId, date: day },
-      },
-      update: {
-        minutesPlayed: { increment: minutesPlayed },
-      },
-      create: {
-        userId,
-        date: day,
-        minutesPlayed,
-      },
+      where: { userId_date: { userId, date: day } },
+      update: { minutesPlayed: { increment: minutesPlayed } },
+      create: { userId, date: day, minutesPlayed },
     });
 
     return res.status(201).json({
@@ -73,7 +67,7 @@ export const createPlaySession = async (req: Request, res: Response) => {
   }
 };
 
-//GET all sessions
+// GET all sessions
 export const getAllPlaySessions = async (req: Request, res: Response) => {
   try {
     const sessions = await prisma.playSession.findMany({
@@ -89,11 +83,9 @@ export const getAllPlaySessions = async (req: Request, res: Response) => {
   }
 };
 
-//GET all play sessions user by userId
+// GET sessions by userId
 export const getUserStats = async (req: Request, res: Response) => {
-  const userIdParam = req.params.userId;
-  const userId = parseInt(userIdParam ?? '', 10);
-
+  const userId = parseInt(req.params.userId ?? '', 10);
   if (Number.isNaN(userId)) {
     return res.status(400).json({ error: 'Invalid userId' });
   }
@@ -113,45 +105,35 @@ export const getUserStats = async (req: Request, res: Response) => {
   }
 };
 
-//DELETE play session by id
+// DELETE play session
 export const deletePlaySession = async (req: Request, res: Response) => {
-  const sessionIdParam = req.params.id;
-  const sessionId = parseInt(sessionIdParam ?? '', 10);
-
+  const sessionId = parseInt(req.params.id ?? '', 10);
   if (Number.isNaN(sessionId)) {
     return res.status(400).json({ error: 'Invalid session id' });
   }
 
   try {
-    // Find the session first
     const session = await prisma.playSession.findUnique({
       where: { id: sessionId },
     });
-
     if (!session) {
       return res.status(404).json({ error: 'Play session not found' });
     }
 
     const { userId, gameId, minutesPlayed, createdAt } = session;
 
-    // Delete the session
-    await prisma.playSession.delete({
-      where: { id: sessionId },
-    });
+    await prisma.playSession.delete({ where: { id: sessionId } });
 
-    // Update user total
     await prisma.user.update({
       where: { id: userId },
       data: { totalMinutesPlayed: { decrement: minutesPlayed } },
     });
 
-    // Update game total
     await prisma.game.update({
       where: { id: gameId },
       data: { totalMinutesPlayed: { decrement: minutesPlayed } },
     });
 
-    // Update daily stats
     const day = normalizeDate(createdAt);
     await prisma.userStats.updateMany({
       where: { userId, date: day },

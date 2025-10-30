@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import BarChart from "../components/BarChartAll";
 import TopPlayersTable from "../components/TopPlayersTable";
 import LineChart from "../components/LineChart";
