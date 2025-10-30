@@ -4,9 +4,12 @@ A full-stack application that allows users to play games, track their progress a
 
 ## 🚀 Features
 
-- **Track Play Time**: Use a timer to track time for different games
+- **Track Play Time**: Use a timer to track time for different games.
+  The timer counts the time as seconds and only when 60 seconds pass we count that time as 1 minute and it get stored in
+   "minutesPlayed" in the "PlaySession" table.
 - **Player Statistics**: Diiferent graph and chart shows play statistics based on daily and weekly data
 - **Leaderboard**: Compare stattistics with other players
+  
 
 ## 🛠 Tech Stack
 
@@ -19,7 +22,8 @@ A full-stack application that allows users to play games, track their progress a
 The database of four tables:
 User, Game, PlaySession, and UserStats.
 
-![gamesTracker](https://github.com/user-attachments/assets/944819a3-5ba1-427e-8134-604618cc647f)
+![Games-Tracker](https://github.com/user-attachments/assets/9be4e0ae-e23a-4065-a3e9-2d203263034d)
+
 
 <pre>
 User -> PlaySession: One-to-many One user can have many play sessions.
@@ -63,6 +67,8 @@ model PlaySession {
   minutesPlayed Int
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  statedAt      DateTime?
+  endedAt       DateTime?
   game          Game     @relation(fields: [gameId], references: [id])
   user          User     @relation(fields: [userId], references: [id])
 }
