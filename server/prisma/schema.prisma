@@ -34,8 +34,11 @@ model PlaySession {
   userId        Int
   gameId        Int
   minutesPlayed Int
+  startedAt     DateTime?
+  endedAt       DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
   game          Game     @relation(fields: [gameId], references: [id])
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

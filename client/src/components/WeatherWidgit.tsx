@@ -39,7 +39,7 @@ export default function Weather() {
         />
         <button
           onClick={handleSearch}
-          className="bg-violet-400 text-white px-4 rounded hover:bg-violet-500"
+          className="bg-pink-400 text-white px-4 rounded hover:bg-pink-500"
         >
           Get Weather
         </button>
