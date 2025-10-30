@@ -26,14 +26,14 @@ export default function Sidebar() {
         <nav className="flex flex-col gap-4">
           {/* Always visible links */}
           <NavLink to="/" className={({ isActive }) => linkClass(isActive)}>
-            Home
+            🧿 Sign Up
           </NavLink>
 
           <NavLink
             to="/users"
             className={({ isActive }) => linkClass(isActive)}
           >
-            Users
+            👥 Users
           </NavLink>
 
           {/* Links for logged-in user */}
@@ -43,13 +43,13 @@ export default function Sidebar() {
                 to={`/games/${currentUser.id}`}
                 className={({ isActive }) => linkClass(isActive)}
               >
-                Games
+                🎮 Games
               </NavLink>
               <NavLink
                 to={`/statistics/${currentUser.id}`}
                 className={({ isActive }) => linkClass(isActive)}
               >
-                Statistics
+                📊 Statistics
               </NavLink>
 
               <NavLink
@@ -83,7 +83,7 @@ export default function Sidebar() {
           onClick={handleLogout}
           className="mt-6 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 w-full cursor-pointer"
         >
-          Logout
+          🌸 Log Out
         </button>
       )}
     </aside>

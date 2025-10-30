@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-import Home from "./pages/Home";
+import Home from "./pages/Signup";
 import Users from "./pages/Users";
 import Profile from "./pages/Profile";
 import Games from "./pages/Games";

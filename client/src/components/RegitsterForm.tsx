@@ -96,7 +96,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
         type="submit"
         className="bg-sky-500 text-white rounded-xl px-4 py-2 hover:bg-sky-600 cursor-pointer"
       >
-        Add User
+        🧿 Sign Up
       </button>
     </form>
   );
