@@ -6,16 +6,14 @@ export default function Weather() {
 
   const fetchWeather = async (city: string) => {
     try {
-      const res = await fetch(
-        `https://api.allorigins.win/raw?url=https://wttr.in/${city}?format=3`
-      );
-
+      const res = await fetch(`https://wttr.in/${city}?format=3`);
       const text = await res.text();
       setWeather(`📍 ${text}`);
     } catch {
       setWeather('⚠️ Weather unavailable');
     }
   };
+
 
   useEffect(() => {
     fetchWeather(city);
