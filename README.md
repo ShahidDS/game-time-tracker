@@ -124,7 +124,7 @@ model PlaySession {
   statedAt      DateTime?
   endedAt       DateTime?
   game          Game     @relation(fields: [gameId], references: [id])
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserStats {
