@@ -45,6 +45,7 @@ A full-stack application that allows users to play games, track their progress a
 - **API Validation:** Zod  
 - **Routing:** React Router  
 - **HTTP Requests:** Axios
+- **ESLint + Prettier** configuration for consistent code style
 
 ---
 
